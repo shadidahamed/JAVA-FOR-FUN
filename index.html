@@ -1,0 +1,468 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>Java শেখো - AI দিয়ে</title>
+<style>
+  :root {
+    --bg: #0f0c29;
+    --card: #1a1a2e;
+    --gold: #ffd700;
+    --pink: #ff6bcb;
+    --cyan: #00f5d4;
+    --purple: #9b5de5;
+    --text: #f8f9fa;
+  }
+  * { margin:0; padding:0; box-sizing:border-box; }
+  body {
+    font-family: 'Segoe UI', system-ui, sans-serif;
+    background: linear-gradient(135deg, #0f0c29, #302b63, #24243e);
+    color: var(--text);
+    min-height: 100vh;
+    overflow: hidden;
+    user-select: none;
+  }
+
+  /* Floating 0 and 1 */
+  .float-bit {
+    position: fixed;
+    font-size: 28px;
+    font-weight: bold;
+    color: var(--cyan);
+    opacity: 0.25;
+    animation: floatBit 12s infinite linear;
+    pointer-events: none;
+    z-index: 0;
+  }
+  @keyframes floatBit {
+    0% { transform: translateY(100vh) rotate(0deg); }
+    100% { transform: translateY(-100px) rotate(360deg); }
+  }
+
+  .app {
+    position: relative;
+    z-index: 10;
+    height: 100vh;
+    display: flex;
+    flex-direction: column;
+  }
+
+  /* Header */
+  header {
+    padding: 14px 18px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background: rgba(0,0,0,0.35);
+    backdrop-filter: blur(10px);
+  }
+  .logo {
+    font-size: 1.3rem;
+    font-weight: 700;
+    background: linear-gradient(90deg, var(--gold), var(--pink));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+  }
+  .progress {
+    font-size: 0.85rem;
+    color: var(--cyan);
+  }
+
+  /* Main content area */
+  .stage {
+    flex: 1;
+    overflow-y: auto;
+    padding: 20px 16px 100px;
+    scroll-behavior: smooth;
+  }
+
+  .lesson {
+    display: none;
+    max-width: 720px;
+    margin: 0 auto;
+    animation: fadeIn 0.5s ease;
+  }
+  .lesson.active { display: block; }
+  @keyframes fadeIn {
+    from { opacity:0; transform: translateY(20px); }
+    to { opacity:1; transform: translateY(0); }
+  }
+
+  h1 {
+    font-size: 1.7rem;
+    margin-bottom: 12px;
+    color: var(--gold);
+  }
+  h2 {
+    font-size: 1.25rem;
+    margin: 18px 0 10px;
+    color: var(--pink);
+  }
+  p {
+    line-height: 1.7;
+    margin-bottom: 12px;
+    font-size: 1.05rem;
+  }
+
+  /* AI Bubble */
+  .ai-box {
+    background: rgba(155,93,229,0.15);
+    border: 1px solid var(--purple);
+    border-radius: 18px;
+    padding: 16px;
+    margin: 16px 0;
+    position: relative;
+  }
+  .ai-box::before {
+    content: "🤖 AI বলছে";
+    position: absolute;
+    top: -12px;
+    left: 16px;
+    background: var(--purple);
+    color: white;
+    font-size: 0.75rem;
+    padding: 2px 10px;
+    border-radius: 20px;
+  }
+
+  /* Code block */
+  .code {
+    background: #0d1117;
+    border: 1px solid #30363d;
+    border-radius: 12px;
+    padding: 14px;
+    font-family: 'Courier New', monospace;
+    font-size: 0.95rem;
+    overflow-x: auto;
+    margin: 14px 0;
+    position: relative;
+  }
+  .code .line { display: block; padding: 2px 0; }
+  .code .glow {
+    background: rgba(0,245,212,0.15);
+    border-left: 3px solid var(--cyan);
+    padding-left: 8px;
+  }
+  .keyword { color: #ff7b72; }
+  .string { color: #a5d6ff; }
+  .comment { color: #8b949e; }
+  .type { color: #79c0ff; }
+
+  /* File icon */
+  .file-icon {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    background: #21262d;
+    border: 1px solid #30363d;
+    padding: 8px 14px;
+    border-radius: 8px;
+    margin: 8px 0;
+    font-family: monospace;
+  }
+  .file-icon.java { border-color: #f89820; }
+  .file-icon.class { border-color: #5382a1; }
+
+  /* Flow arrows */
+  .flow {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 6px;
+    margin: 20px 0;
+  }
+  .flow-box {
+    background: var(--card);
+    border: 2px solid var(--cyan);
+    padding: 10px 18px;
+    border-radius: 10px;
+    text-align: center;
+    min-width: 180px;
+  }
+  .arrow { color: var(--gold); font-size: 1.4rem; }
+
+  /* Buttons */
+  .btn-row {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    padding: 14px 16px;
+    background: rgba(0,0,0,0.7);
+    backdrop-filter: blur(12px);
+    display: flex;
+    gap: 12px;
+    justify-content: center;
+    z-index: 100;
+  }
+  button {
+    border: none;
+    padding: 12px 22px;
+    border-radius: 50px;
+    font-size: 1rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: 0.2s;
+  }
+  .btn-next {
+    background: linear-gradient(90deg, var(--pink), var(--purple));
+    color: white;
+  }
+  .btn-back {
+    background: transparent;
+    border: 1px solid #666;
+    color: #ccc;
+  }
+  .btn-speak {
+    background: var(--cyan);
+    color: #000;
+  }
+  button:active { transform: scale(0.96); }
+
+  /* Highlight cards */
+  .card {
+    background: var(--card);
+    border-radius: 14px;
+    padding: 14px;
+    margin: 12px 0;
+    border: 1px solid rgba(255,255,255,0.08);
+  }
+  .card.gold { border-color: var(--gold); }
+  .card.cyan { border-color: var(--cyan); }
+
+  /* Mini game placeholder */
+  .game-area {
+    background: #161b22;
+    border-radius: 16px;
+    padding: 20px;
+    text-align: center;
+    margin-top: 20px;
+  }
+
+  /* Responsive */
+  @media (max-width: 500px) {
+    h1 { font-size: 1.4rem; }
+    .code { font-size: 0.85rem; }
+  }
+</style>
+</head>
+<body>
+
+<!-- Floating bits -->
+<div id="bits"></div>
+
+<div class="app">
+  <header>
+    <div class="logo">Java শেখো 🚀</div>
+    <div class="progress" id="progress">লেসন ১ / ৮</div>
+  </header>
+
+  <div class="stage" id="stage">
+
+    <!-- LESSON 1 -->
+    <div class="lesson active" data-lesson="1">
+      <h1>ভাষা কেন দরকার?</h1>
+      <div class="ai-box" id="ai1">
+        পৃথিবীতে অনেক মানুষ অনেক ভাষায় কথা বলে। সবাইকে একসাথে কথা বলতে গেলে একটা সাধারণ ভাষা দরকার হয়। সেই ভাষা হলো ইংরেজি।
+        <br><br>
+        কম্পিউটারও ঠিক তেমন। কম্পিউটার শুধু <b>০</b> আর <b>১</b> বোঝে। আমরা যে ভাষায় কথা বলি, সেটা সে বোঝে না।
+      </div>
+      <p>তাই কম্পিউটারের সাথে কথা বলার জন্য আমাদের দরকার <b>প্রোগ্রামিং ল্যাঙ্গুয়েজ</b>।</p>
+      <div class="card gold">
+        <b>০</b> = অফ (বিদ্যুৎ নেই)<br>
+        <b>১</b> = অন (বিদ্যুৎ আছে)
+      </div>
+    </div>
+
+    <!-- LESSON 2 -->
+    <div class="lesson" data-lesson="2">
+      <h1>Java কী?</h1>
+      <div class="ai-box">
+        Java হলো একটা প্রোগ্রামিং ল্যাঙ্গুয়েজ। যেমন আমরা মানুষের সাথে কথা বলতে ইংরেজি ব্যবহার করি, ঠিক তেমন কম্পিউটারের সাথে কথা বলতে Java ব্যবহার করি।
+      </div>
+      <p>Java দিয়ে আমরা অ্যাপ, গেম, ব্যাংকিং সফটওয়্যার, ওয়েবসাইটের ব্যাকএন্ড তৈরি করতে পারি।</p>
+      <div class="card cyan">
+        <b>মনে রাখো:</b> Java ≠ JavaScript<br>
+        দুটো সম্পূর্ণ আলাদা ভাষা।
+      </div>
+    </div>
+
+    <!-- LESSON 3 -->
+    <div class="lesson" data-lesson="3">
+      <h1>Source Code → Bytecode → JVM</h1>
+      <div class="ai-box">
+        আমরা যে কোড লিখি সেটা <b>Source Code</b>। কম্পিউটার সরাসরি এটা বোঝে না। তাই একটা বিশেষ প্রোগ্রাম লাগে যাকে বলে <b>Compiler</b>।
+      </div>
+
+      <div class="flow">
+        <div class="flow-box">hello.java<br><small>Source Code</small></div>
+        <div class="arrow">↓ javac (Compiler)</div>
+        <div class="flow-box">hello.class<br><small>Bytecode</small></div>
+        <div class="arrow">↓ JVM</div>
+        <div class="flow-box">০ এবং ১<br><small>Machine Code</small></div>
+      </div>
+
+      <p><b>Bytecode</b> হলো মাঝামাঝি ভাষা। JVM (Java Virtual Machine) এই bytecode কে ০/১ এ রূপান্তর করে।</p>
+    </div>
+
+    <!-- LESSON 4 -->
+    <div class="lesson" data-lesson="4">
+      <h1>Class = ছাঁচ (Blueprint)</h1>
+      <div class="ai-box">
+        ক্লাস মানে হলো একটা খালি ফর্ম বা নকশা। যেমন স্কুলে টুর্নামেন্টের আবেদন ফর্ম।
+      </div>
+      <p>ফর্মটিতে জায়গা রাখা থাকে: নাম, রোল, শ্রেণি, শাখা। কিন্তু এখনো কেউ পূরণ করেনি। এটাই <b>Class</b>।</p>
+
+      <div class="code">
+        <span class="line"><span class="keyword">public class</span> Student {</span>
+        <span class="line">  <span class="type">String</span> name;     <span class="comment">// নামের জায়গা</span></span>
+        <span class="line">  <span class="type">int</span> roll;        <span class="comment">// রোলের জায়গা</span></span>
+        <span class="line">  <span class="type">String</span> className;</span>
+        <span class="line">  <span class="type">String</span> section;</span>
+        <span class="line">}</span>
+      </div>
+    </div>
+
+    <!-- LESSON 5 -->
+    <div class="lesson" data-lesson="5">
+      <h1>Object = ভরাট ফর্ম</h1>
+      <div class="ai-box">
+        যখন রহিম ফর্মটি পূরণ করে, তখন সেটা হয়ে যায় একটা <b>Object</b>।
+      </div>
+
+      <div class="code">
+        <span class="line">Student rahim = <span class="keyword">new</span> Student();</span>
+        <span class="line">rahim.name = <span class="string">"রহিম"</span>;</span>
+        <span class="line">rahim.roll = 5;</span>
+        <span class="line">rahim.className = <span class="string">"নবম"</span>;</span>
+        <span class="line">rahim.section = <span class="string">"ক"</span>;</span>
+      </div>
+
+      <p>একই ক্লাস থেকে অনেকগুলো অবজেক্ট বানানো যায় (রহিম, করিম...)।</p>
+    </div>
+
+    <!-- LESSON 6 -->
+    <div class="lesson" data-lesson="6">
+      <h1>প্রথম প্রোগ্রাম</h1>
+      <div class="file-icon java">📄 Hello.java</div>
+
+      <div class="code" id="helloCode">
+        <span class="line"><span class="keyword">public class</span> Hello {</span>
+        <span class="line">  <span class="keyword">public static void</span> main(String[] args) {</span>
+        <span class="line">    System.out.println(<span class="string">"Hello World"</span>);</span>
+        <span class="line">  }</span>
+        <span class="line">}</span>
+      </div>
+
+      <button class="btn-speak" onclick="speak('এই প্রোগ্রামটি স্ক্রিনে Hello World লিখে দেখাবে')">🔊 AI বলো</button>
+      <button class="btn-next" style="margin-left:10px" onclick="alert('সিমুলেটেড আউটপুট:\nHello World')">▶ Run</button>
+    </div>
+
+    <!-- LESSON 7 -->
+    <div class="lesson" data-lesson="7">
+      <h1>Method কী?</h1>
+      <div class="ai-box">
+        Method হলো কাজের ব্লক। একবার লিখে বারবার ব্যবহার করা যায়।
+      </div>
+
+      <div class="card">
+        <b>void method</b> → কিছু ফেরত দেয় না<br>
+        <b>return method</b> → মান ফেরত দেয়<br>
+        <b>static method</b> → object ছাড়াই চলে<br>
+        <b>main method</b> → প্রোগ্রাম এখান থেকে শুরু
+      </div>
+
+      <div class="code">
+        <span class="line"><span class="keyword">void</span> showInfo() {</span>
+        <span class="line">  System.out.println(name);</span>
+        <span class="line">}</span>
+      </div>
+    </div>
+
+    <!-- LESSON 8 - Mini Game -->
+    <div class="lesson" data-lesson="8">
+      <h1>মিনি গেম 🎮</h1>
+      <div class="game-area">
+        <p>ক্লাস আর অবজেক্ট ম্যাচ করো!</p>
+        <p style="margin:20px 0;font-size:1.2rem">শীঘ্রই আসছে...</p>
+        <p>তুমি ইতিমধ্যে অনেক কিছু শিখে ফেলেছ!</p>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- Navigation -->
+  <div class="btn-row">
+    <button class="btn-back" id="btnBack" onclick="prevLesson()">← আগে</button>
+    <button class="btn-speak" onclick="speakCurrent()">🔊 শোনো</button>
+    <button class="btn-next" id="btnNext" onclick="nextLesson()">পরে →</button>
+  </div>
+</div>
+
+<script>
+  // Floating 0 & 1
+  const bits = document.getElementById('bits');
+  for (let i = 0; i < 18; i++) {
+    const el = document.createElement('div');
+    el.className = 'float-bit';
+    el.textContent = Math.random() > 0.5 ? '0' : '1';
+    el.style.left = Math.random() * 100 + 'vw';
+    el.style.animationDuration = (8 + Math.random() * 10) + 's';
+    el.style.animationDelay = Math.random() * 8 + 's';
+    bits.appendChild(el);
+  }
+
+  let current = 1;
+  const total = 8;
+
+  function showLesson(n) {
+    document.querySelectorAll('.lesson').forEach(l => l.classList.remove('active'));
+    document.querySelector(`[data-lesson="${n}"]`).classList.add('active');
+    document.getElementById('progress').textContent = `লেসন ${n} / ${total}`;
+    document.getElementById('btnBack').style.visibility = n === 1 ? 'hidden' : 'visible';
+    document.getElementById('btnNext').textContent = n === total ? 'শেষ ✓' : 'পরে →';
+    window.speechSynthesis.cancel();
+  }
+
+  function nextLesson() {
+    if (current < total) {
+      current++;
+      showLesson(current);
+    }
+  }
+  function prevLesson() {
+    if (current > 1) {
+      current--;
+      showLesson(current);
+    }
+  }
+
+  // Speech
+  function speak(text) {
+    window.speechSynthesis.cancel();
+    const u = new SpeechSynthesisUtterance(text);
+    u.lang = 'bn-BD';
+    u.rate = 0.9;
+    window.speechSynthesis.speak(u);
+  }
+
+  function speakCurrent() {
+    const texts = {
+      1: 'পৃথিবীতে অনেক মানুষ অনেক ভাষায় কথা বলে। কম্পিউটার শুধু শূন্য আর এক বোঝে।',
+      2: 'জাভা হলো একটা প্রোগ্রামিং ল্যাঙ্গুয়েজ। কম্পিউটারের সাথে কথা বলার ভাষা।',
+      3: 'সোর্স কোড থেকে কম্পাইলার বাইটকোড বানায়। তারপর জেভিএম সেটাকে শূন্য এক এ রূপান্তর করে।',
+      4: 'ক্লাস মানে হলো একটা খালি ফর্ম বা নকশা।',
+      5: 'যখন কেউ ফর্ম পূরণ করে তখন সেটা হয়ে যায় অবজেক্ট।',
+      6: 'এই প্রোগ্রামটি স্ক্রিনে হ্যালো ওয়ার্ল্ড লিখে দেখাবে।',
+      7: 'মেথড হলো কাজের ব্লক। একবার লিখে বারবার ব্যবহার করা যায়।',
+      8: 'অভিনন্দন! তুমি বেসিক জাভা শিখে ফেলেছ।'
+    };
+    speak(texts[current] || '');
+  }
+
+  // Start
+  showLesson(1);
+</script>
+</body>
+</html>
