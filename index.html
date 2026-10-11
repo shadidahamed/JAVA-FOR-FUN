@@ -3,466 +3,685 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<title>Java শেখো - AI দিয়ে</title>
+<title>Java শেখো মজার সাথে | Kids Java Hub</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
 <style>
   :root {
     --bg: #0f0c29;
-    --card: #1a1a2e;
-    --gold: #ffd700;
-    --pink: #ff6bcb;
-    --cyan: #00f5d4;
-    --purple: #9b5de5;
+    --card: #1a1635;
+    --accent: #ff6b6b;
+    --accent2: #4ecdc4;
+    --accent3: #ffe66d;
     --text: #f8f9fa;
+    --soft: #a0aec0;
   }
   * { margin:0; padding:0; box-sizing:border-box; }
   body {
     font-family: 'Segoe UI', system-ui, sans-serif;
     background: linear-gradient(135deg, #0f0c29, #302b63, #24243e);
     color: var(--text);
-    min-height: 100vh;
     overflow: hidden;
-    user-select: none;
-  }
-
-  /* Floating 0 and 1 */
-  .float-bit {
-    position: fixed;
-    font-size: 28px;
-    font-weight: bold;
-    color: var(--cyan);
-    opacity: 0.25;
-    animation: floatBit 12s infinite linear;
-    pointer-events: none;
-    z-index: 0;
-  }
-  @keyframes floatBit {
-    0% { transform: translateY(100vh) rotate(0deg); }
-    100% { transform: translateY(-100px) rotate(360deg); }
-  }
-
-  .app {
-    position: relative;
-    z-index: 10;
     height: 100vh;
-    display: flex;
-    flex-direction: column;
+    width: 100vw;
   }
+  #app { display:flex; height:100vh; }
+  /* Left 3D AI Panel */
+  #ai-panel {
+    width: 320px;
+    background: rgba(0,0,0,0.4);
+    border-right: 2px solid rgba(255,255,255,0.1);
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    padding:20px 10px;
+    position:relative;
+  }
+  #canvas-container {
+    width:280px; height:320px;
+    border-radius:20px;
+    overflow:hidden;
+    box-shadow:0 0 40px rgba(78,205,196,0.3);
+    margin-bottom:15px;
+  }
+  #ai-name {
+    font-size:1.4rem; font-weight:700; color:var(--accent2);
+    margin-bottom:8px;
+  }
+  #ai-status {
+    font-size:0.9rem; color:var(--soft);
+    margin-bottom:15px;
+  }
+  .voice-btn {
+    background:var(--accent2); color:#000; border:none;
+    padding:10px 22px; border-radius:30px; font-weight:700;
+    cursor:pointer; font-size:1rem; transition:0.2s;
+  }
+  .voice-btn:hover { transform:scale(1.05); }
+  .voice-btn.speaking { background:var(--accent); animation:pulse 1s infinite; }
+  @keyframes pulse { 0%,100%{opacity:1} 50%{opacity:0.7} }
 
-  /* Header */
-  header {
-    padding: 14px 18px;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    background: rgba(0,0,0,0.35);
-    backdrop-filter: blur(10px);
+  /* Main Content */
+  #main {
+    flex:1; display:flex; flex-direction:column;
+    position:relative; overflow:hidden;
   }
-  .logo {
-    font-size: 1.3rem;
-    font-weight: 700;
-    background: linear-gradient(90deg, var(--gold), var(--pink));
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
+  .section {
+    position:absolute; inset:0;
+    padding:30px 40px 100px;
+    overflow-y:auto;
+    opacity:0; pointer-events:none;
+    transition:opacity 0.4s ease;
+    display:flex; flex-direction:column;
   }
-  .progress {
-    font-size: 0.85rem;
-    color: var(--cyan);
-  }
-
-  /* Main content area */
-  .stage {
-    flex: 1;
-    overflow-y: auto;
-    padding: 20px 16px 100px;
-    scroll-behavior: smooth;
-  }
-
-  .lesson {
-    display: none;
-    max-width: 720px;
-    margin: 0 auto;
-    animation: fadeIn 0.5s ease;
-  }
-  .lesson.active { display: block; }
-  @keyframes fadeIn {
-    from { opacity:0; transform: translateY(20px); }
-    to { opacity:1; transform: translateY(0); }
-  }
-
-  h1 {
-    font-size: 1.7rem;
-    margin-bottom: 12px;
-    color: var(--gold);
-  }
-  h2 {
-    font-size: 1.25rem;
-    margin: 18px 0 10px;
-    color: var(--pink);
-  }
-  p {
-    line-height: 1.7;
-    margin-bottom: 12px;
-    font-size: 1.05rem;
-  }
-
-  /* AI Bubble */
-  .ai-box {
-    background: rgba(155,93,229,0.15);
-    border: 1px solid var(--purple);
-    border-radius: 18px;
-    padding: 16px;
-    margin: 16px 0;
-    position: relative;
-  }
-  .ai-box::before {
-    content: "🤖 AI বলছে";
-    position: absolute;
-    top: -12px;
-    left: 16px;
-    background: var(--purple);
-    color: white;
-    font-size: 0.75rem;
-    padding: 2px 10px;
-    border-radius: 20px;
-  }
-
-  /* Code block */
-  .code {
-    background: #0d1117;
-    border: 1px solid #30363d;
-    border-radius: 12px;
-    padding: 14px;
-    font-family: 'Courier New', monospace;
-    font-size: 0.95rem;
-    overflow-x: auto;
-    margin: 14px 0;
-    position: relative;
-  }
-  .code .line { display: block; padding: 2px 0; }
-  .code .glow {
-    background: rgba(0,245,212,0.15);
-    border-left: 3px solid var(--cyan);
-    padding-left: 8px;
-  }
-  .keyword { color: #ff7b72; }
-  .string { color: #a5d6ff; }
-  .comment { color: #8b949e; }
-  .type { color: #79c0ff; }
-
-  /* File icon */
-  .file-icon {
-    display: inline-flex;
-    align-items: center;
-    gap: 8px;
-    background: #21262d;
-    border: 1px solid #30363d;
-    padding: 8px 14px;
-    border-radius: 8px;
-    margin: 8px 0;
-    font-family: monospace;
-  }
-  .file-icon.java { border-color: #f89820; }
-  .file-icon.class { border-color: #5382a1; }
-
-  /* Flow arrows */
-  .flow {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 6px;
-    margin: 20px 0;
-  }
-  .flow-box {
-    background: var(--card);
-    border: 2px solid var(--cyan);
-    padding: 10px 18px;
-    border-radius: 10px;
-    text-align: center;
-    min-width: 180px;
-  }
-  .arrow { color: var(--gold); font-size: 1.4rem; }
-
-  /* Buttons */
-  .btn-row {
-    position: fixed;
-    bottom: 0;
-    left: 0;
-    right: 0;
-    padding: 14px 16px;
-    background: rgba(0,0,0,0.7);
-    backdrop-filter: blur(12px);
-    display: flex;
-    gap: 12px;
-    justify-content: center;
-    z-index: 100;
-  }
-  button {
-    border: none;
-    padding: 12px 22px;
-    border-radius: 50px;
-    font-size: 1rem;
-    font-weight: 600;
-    cursor: pointer;
-    transition: 0.2s;
-  }
-  .btn-next {
-    background: linear-gradient(90deg, var(--pink), var(--purple));
-    color: white;
-  }
-  .btn-back {
-    background: transparent;
-    border: 1px solid #666;
-    color: #ccc;
-  }
-  .btn-speak {
-    background: var(--cyan);
-    color: #000;
-  }
-  button:active { transform: scale(0.96); }
-
-  /* Highlight cards */
+  .section.active { opacity:1; pointer-events:auto; }
+  h1 { font-size:2.2rem; margin-bottom:12px; color:var(--accent3); }
+  h2 { font-size:1.6rem; margin:20px 0 10px; color:var(--accent2); }
+  p, li { font-size:1.1rem; line-height:1.7; margin-bottom:10px; }
   .card {
-    background: var(--card);
-    border-radius: 14px;
-    padding: 14px;
-    margin: 12px 0;
-    border: 1px solid rgba(255,255,255,0.08);
+    background:var(--card);
+    border-radius:18px;
+    padding:22px;
+    margin:15px 0;
+    border:1px solid rgba(255,255,255,0.08);
+    box-shadow:0 10px 30px rgba(0,0,0,0.3);
   }
-  .card.gold { border-color: var(--gold); }
-  .card.cyan { border-color: var(--cyan); }
-
-  /* Mini game placeholder */
-  .game-area {
-    background: #161b22;
-    border-radius: 16px;
-    padding: 20px;
-    text-align: center;
-    margin-top: 20px;
+  .code {
+    background:#1e1e2e;
+    border-radius:12px;
+    padding:18px;
+    font-family:'Fira Code', monospace;
+    font-size:0.95rem;
+    overflow-x:auto;
+    border-left:4px solid var(--accent2);
+    margin:12px 0;
+    white-space:pre;
   }
-
+  .keyword { color:#c792ea; }
+  .string { color:#c3e88d; }
+  .comment { color:#546e7a; }
+  .type { color:#82aaff; }
+  .run-btn {
+    background:var(--accent); color:white; border:none;
+    padding:8px 18px; border-radius:20px; font-weight:600;
+    cursor:pointer; margin-top:10px;
+  }
+  .output {
+    background:#0d1117; border-radius:10px; padding:14px;
+    margin-top:10px; border:1px solid #30363d;
+    font-family:monospace; color:#7ee787;
+    display:none;
+  }
+  .glow { animation:glow 1.5s ease-in-out infinite alternate; }
+  @keyframes glow {
+    from { box-shadow:0 0 10px var(--accent2); }
+    to { box-shadow:0 0 25px var(--accent2); }
+  }
+  /* Navigation */
+  #nav {
+    position:absolute; bottom:0; left:0; right:0;
+    height:80px;
+    background:rgba(0,0,0,0.7);
+    display:flex; align-items:center; justify-content:space-between;
+    padding:0 40px;
+    backdrop-filter:blur(10px);
+  }
+  .nav-btn {
+    background:var(--accent2); color:#000; border:none;
+    padding:12px 28px; border-radius:30px; font-weight:700;
+    font-size:1.1rem; cursor:pointer; transition:0.2s;
+  }
+  .nav-btn:disabled { opacity:0.4; cursor:not-allowed; }
+  .nav-btn:hover:not(:disabled) { transform:scale(1.05); }
+  #progress {
+    color:var(--soft); font-size:0.95rem;
+  }
+  /* Mini Game */
+  .match-area { display:flex; gap:30px; flex-wrap:wrap; justify-content:center; margin-top:20px; }
+  .match-card {
+    background:var(--card); width:160px; height:100px;
+    border-radius:16px; display:flex; align-items:center; justify-content:center;
+    font-size:1.2rem; font-weight:700; cursor:pointer;
+    border:3px solid transparent; transition:0.2s;
+  }
+  .match-card:hover { border-color:var(--accent2); }
+  .match-card.selected { border-color:var(--accent); background:#2a1f4a; }
+  .match-card.correct { border-color:#4caf50; background:#1b3a1b; }
+  .match-card.wrong { border-color:#f44336; background:#3a1b1b; }
   /* Responsive */
-  @media (max-width: 500px) {
-    h1 { font-size: 1.4rem; }
-    .code { font-size: 0.85rem; }
+  @media(max-width:900px){
+    #ai-panel{width:100%; height:220px; flex-direction:row; border-right:none; border-bottom:2px solid rgba(255,255,255,0.1);}
+    #canvas-container{width:160px; height:160px;}
+    #app{flex-direction:column;}
+    .section{padding:20px 20px 100px;}
   }
 </style>
 </head>
 <body>
-
-<!-- Floating bits -->
-<div id="bits"></div>
-
-<div class="app">
-  <header>
-    <div class="logo">Java শেখো 🚀</div>
-    <div class="progress" id="progress">লেসন ১ / ৮</div>
-  </header>
-
-  <div class="stage" id="stage">
-
-    <!-- LESSON 1 -->
-    <div class="lesson active" data-lesson="1">
-      <h1>ভাষা কেন দরকার?</h1>
-      <div class="ai-box" id="ai1">
-        পৃথিবীতে অনেক মানুষ অনেক ভাষায় কথা বলে। সবাইকে একসাথে কথা বলতে গেলে একটা সাধারণ ভাষা দরকার হয়। সেই ভাষা হলো ইংরেজি।
-        <br><br>
-        কম্পিউটারও ঠিক তেমন। কম্পিউটার শুধু <b>০</b> আর <b>১</b> বোঝে। আমরা যে ভাষায় কথা বলি, সেটা সে বোঝে না।
-      </div>
-      <p>তাই কম্পিউটারের সাথে কথা বলার জন্য আমাদের দরকার <b>প্রোগ্রামিং ল্যাঙ্গুয়েজ</b>।</p>
-      <div class="card gold">
-        <b>০</b> = অফ (বিদ্যুৎ নেই)<br>
-        <b>১</b> = অন (বিদ্যুৎ আছে)
-      </div>
-    </div>
-
-    <!-- LESSON 2 -->
-    <div class="lesson" data-lesson="2">
-      <h1>Java কী?</h1>
-      <div class="ai-box">
-        Java হলো একটা প্রোগ্রামিং ল্যাঙ্গুয়েজ। যেমন আমরা মানুষের সাথে কথা বলতে ইংরেজি ব্যবহার করি, ঠিক তেমন কম্পিউটারের সাথে কথা বলতে Java ব্যবহার করি।
-      </div>
-      <p>Java দিয়ে আমরা অ্যাপ, গেম, ব্যাংকিং সফটওয়্যার, ওয়েবসাইটের ব্যাকএন্ড তৈরি করতে পারি।</p>
-      <div class="card cyan">
-        <b>মনে রাখো:</b> Java ≠ JavaScript<br>
-        দুটো সম্পূর্ণ আলাদা ভাষা।
-      </div>
-    </div>
-
-    <!-- LESSON 3 -->
-    <div class="lesson" data-lesson="3">
-      <h1>Source Code → Bytecode → JVM</h1>
-      <div class="ai-box">
-        আমরা যে কোড লিখি সেটা <b>Source Code</b>। কম্পিউটার সরাসরি এটা বোঝে না। তাই একটা বিশেষ প্রোগ্রাম লাগে যাকে বলে <b>Compiler</b>।
-      </div>
-
-      <div class="flow">
-        <div class="flow-box">hello.java<br><small>Source Code</small></div>
-        <div class="arrow">↓ javac (Compiler)</div>
-        <div class="flow-box">hello.class<br><small>Bytecode</small></div>
-        <div class="arrow">↓ JVM</div>
-        <div class="flow-box">০ এবং ১<br><small>Machine Code</small></div>
-      </div>
-
-      <p><b>Bytecode</b> হলো মাঝামাঝি ভাষা। JVM (Java Virtual Machine) এই bytecode কে ০/১ এ রূপান্তর করে।</p>
-    </div>
-
-    <!-- LESSON 4 -->
-    <div class="lesson" data-lesson="4">
-      <h1>Class = ছাঁচ (Blueprint)</h1>
-      <div class="ai-box">
-        ক্লাস মানে হলো একটা খালি ফর্ম বা নকশা। যেমন স্কুলে টুর্নামেন্টের আবেদন ফর্ম।
-      </div>
-      <p>ফর্মটিতে জায়গা রাখা থাকে: নাম, রোল, শ্রেণি, শাখা। কিন্তু এখনো কেউ পূরণ করেনি। এটাই <b>Class</b>।</p>
-
-      <div class="code">
-        <span class="line"><span class="keyword">public class</span> Student {</span>
-        <span class="line">  <span class="type">String</span> name;     <span class="comment">// নামের জায়গা</span></span>
-        <span class="line">  <span class="type">int</span> roll;        <span class="comment">// রোলের জায়গা</span></span>
-        <span class="line">  <span class="type">String</span> className;</span>
-        <span class="line">  <span class="type">String</span> section;</span>
-        <span class="line">}</span>
-      </div>
-    </div>
-
-    <!-- LESSON 5 -->
-    <div class="lesson" data-lesson="5">
-      <h1>Object = ভরাট ফর্ম</h1>
-      <div class="ai-box">
-        যখন রহিম ফর্মটি পূরণ করে, তখন সেটা হয়ে যায় একটা <b>Object</b>।
-      </div>
-
-      <div class="code">
-        <span class="line">Student rahim = <span class="keyword">new</span> Student();</span>
-        <span class="line">rahim.name = <span class="string">"রহিম"</span>;</span>
-        <span class="line">rahim.roll = 5;</span>
-        <span class="line">rahim.className = <span class="string">"নবম"</span>;</span>
-        <span class="line">rahim.section = <span class="string">"ক"</span>;</span>
-      </div>
-
-      <p>একই ক্লাস থেকে অনেকগুলো অবজেক্ট বানানো যায় (রহিম, করিম...)।</p>
-    </div>
-
-    <!-- LESSON 6 -->
-    <div class="lesson" data-lesson="6">
-      <h1>প্রথম প্রোগ্রাম</h1>
-      <div class="file-icon java">📄 Hello.java</div>
-
-      <div class="code" id="helloCode">
-        <span class="line"><span class="keyword">public class</span> Hello {</span>
-        <span class="line">  <span class="keyword">public static void</span> main(String[] args) {</span>
-        <span class="line">    System.out.println(<span class="string">"Hello World"</span>);</span>
-        <span class="line">  }</span>
-        <span class="line">}</span>
-      </div>
-
-      <button class="btn-speak" onclick="speak('এই প্রোগ্রামটি স্ক্রিনে Hello World লিখে দেখাবে')">🔊 AI বলো</button>
-      <button class="btn-next" style="margin-left:10px" onclick="alert('সিমুলেটেড আউটপুট:\nHello World')">▶ Run</button>
-    </div>
-
-    <!-- LESSON 7 -->
-    <div class="lesson" data-lesson="7">
-      <h1>Method কী?</h1>
-      <div class="ai-box">
-        Method হলো কাজের ব্লক। একবার লিখে বারবার ব্যবহার করা যায়।
-      </div>
-
-      <div class="card">
-        <b>void method</b> → কিছু ফেরত দেয় না<br>
-        <b>return method</b> → মান ফেরত দেয়<br>
-        <b>static method</b> → object ছাড়াই চলে<br>
-        <b>main method</b> → প্রোগ্রাম এখান থেকে শুরু
-      </div>
-
-      <div class="code">
-        <span class="line"><span class="keyword">void</span> showInfo() {</span>
-        <span class="line">  System.out.println(name);</span>
-        <span class="line">}</span>
-      </div>
-    </div>
-
-    <!-- LESSON 8 - Mini Game -->
-    <div class="lesson" data-lesson="8">
-      <h1>মিনি গেম 🎮</h1>
-      <div class="game-area">
-        <p>ক্লাস আর অবজেক্ট ম্যাচ করো!</p>
-        <p style="margin:20px 0;font-size:1.2rem">শীঘ্রই আসছে...</p>
-        <p>তুমি ইতিমধ্যে অনেক কিছু শিখে ফেলেছ!</p>
-      </div>
-    </div>
-
+<div id="app">
+  <!-- AI Panel -->
+  <div id="ai-panel">
+    <div id="canvas-container"></div>
+    <div id="ai-name">🤖 জাভা-বন্ধু</div>
+    <div id="ai-status">আমি তোমার Java গাইড</div>
+    <button class="voice-btn" id="speakBtn">🔊 কথা বলো</button>
   </div>
 
-  <!-- Navigation -->
-  <div class="btn-row">
-    <button class="btn-back" id="btnBack" onclick="prevLesson()">← আগে</button>
-    <button class="btn-speak" onclick="speakCurrent()">🔊 শোনো</button>
-    <button class="btn-next" id="btnNext" onclick="nextLesson()">পরে →</button>
+  <!-- Main Content Sections -->
+  <div id="main">
+    <!-- 0: Welcome -->
+    <div class="section active" data-index="0">
+      <h1>স্বাগতম Java শেখার জগতে! 🎉</h1>
+      <div class="card">
+        <p>আজ আমরা মজার করে Java শিখব — যে ভাষায় কম্পিউটারের সাথে কথা বলা যায়।</p>
+        <p>পৃথিবীতে মানুষ ইংরেজি দিয়ে একে অপরের সাথে যোগাযোগ করে। ঠিক তেমনই কম্পিউটারের নিজস্ব ভাষা হলো <b>০</b> আর <b>১</b>।</p>
+        <p>Java হলো সেই সেতু যেটা আমাদের কথা কম্পিউটার বোঝে।</p>
+      </div>
+      <div class="card">
+        <h2>আজ যা শিখব</h2>
+        <ul>
+          <li>Java কী ও কেন?</li>
+          <li>Source Code → Bytecode → JVM</li>
+          <li>Class ও Object (রহিম-করিমের গল্প)</li>
+          <li>Access Modifier</li>
+          <li>Method-এর সব ধরন</li>
+          <li>মজার মিনি-গেম</li>
+        </ul>
+      </div>
+    </div>
+
+    <!-- 1: What is Java -->
+    <div class="section" data-index="1">
+      <h1>Java কী?</h1>
+      <div class="card">
+        <p>Java হলো একটি <b>Programming Language</b>।</p>
+        <p>আমরা যে ভাষায় কথা বলি, কম্পিউটার তা বুঝতে পারে না। কম্পিউটার শুধু <b>০</b> আর <b>১</b> বোঝে (On / Off)।</p>
+        <p>বর্তমানে current থাকলে → <b>1 (On)</b><br>current না থাকলে → <b>0 (Off)</b></p>
+      </div>
+      <div class="card">
+        <h2>Java vs HTML</h2>
+        <p>HTML যেমন <b>পেজ</b> বানাতে ব্যবহার হয়,<br>Java তেমন <b>Program / App</b> বানাতে ব্যবহার হয়।</p>
+      </div>
+      <div class="card">
+        <h2>Java vs JavaScript</h2>
+        <p><b>নাম কাছাকাছি, কিন্তু সম্পূর্ণ আলাদা!</b></p>
+        <p><b>Java</b> → Android App, Banking, Enterprise Software, Minecraft Java Edition</p>
+        <p><b>JavaScript</b> → Interactive Website, Web App, Node.js, Browser Games</p>
+      </div>
+    </div>
+
+    <!-- 2: Compilation Flow -->
+    <div class="section" data-index="2">
+      <h1>Source Code → Bytecode → JVM</h1>
+      <div class="card">
+        <p><b>Hello.java</b> → এটি একটা <b>Source Code</b>।</p>
+        <p>এটাকে <code>javac</code> নামের টুল দিয়ে চালানো হয়। <code>javac</code> হলো Java-এর <b>Compiler</b>।</p>
+      </div>
+      <div class="card">
+        <h2>Compiler কী?</h2>
+        <p>Compiler হলো এমন সফটওয়্যার যা প্রোগ্রামারের লেখা কোডকে কম্পিউটার বোঝার উপযোগী Machine Code-এ রূপান্তর করে।</p>
+      </div>
+      <div class="card">
+        <h2>Java-এর বিশেষত্ব</h2>
+        <p>Java সরাসরি ০ ও ১-এ নেয় না।<br>সে <b>Bytecode</b> নামক একটা মাঝামাঝি ভাষায় পরিণত করে।</p>
+        <p>Bytecode দেখতে এমন: <code>CAFEBABE ...</code></p>
+        <p>তারপর <b>JVM (Java Virtual Machine)</b> সেই Bytecode নিয়ে আসল ০,১-এ রূপান্তর করে প্রোগ্রাম চালায়।</p>
+        <p><b>অর্থাৎ Java কোনো Compiler নয় — এটি এক প্রকার Language।</b></p>
+      </div>
+    </div>
+
+    <!-- 3: File & Class Name -->
+    <div class="section" data-index="3">
+      <h1>File তৈরির নিয়ম</h1>
+      <div class="card">
+        <p>Java Coding করতে হলে সর্বপ্রথম একটা <b>file create</b> করতে হয়।</p>
+        <p>File-এর নামের পরে <b>.java</b> লেখা থাকতেই হবে।</p>
+        <p>যেমন pdf-এর ক্ষেত্রে .pdf, jpg-এর ক্ষেত্রে .jpg — ঠিক তেমনই .java।</p>
+        <p><b>ভেতরের যে Class-এর নাম দিবে, File-এর নামও একই হতে হবে।</b></p>
+        <p>অতএব Class-এর নাম যদি <b>Hello</b> হয়, তবে File-এর নামও <b>Hello.java</b> হতে হবে।</p>
+        <p>(HTML-এর index.html-এর মতো fixed নাম নয়, Class-এর নাম অনুসারে হয়)</p>
+      </div>
+      <div class="card">
+        <h2>একটা Simple Program</h2>
+        <div class="code" id="helloCode">
+<span class="keyword">public class</span> <span class="type">Hello</span> {
+    <span class="keyword">public static void</span> main(String[] args) {
+        System.out.println(<span class="string">"Hello World"</span>);
+    }
+}
+        </div>
+        <button class="run-btn" onclick="runHello()">▶ Run</button>
+        <div class="output" id="helloOut">Hello World</div>
+      </div>
+    </div>
+
+    <!-- 4: Access Modifiers -->
+    <div class="section" data-index="4">
+      <h1>public class Hello — তিনটি জিনিস</h1>
+      <div class="card">
+        <p><b>public</b> → সবার জন্য খোলা। এই Class-কে অন্য জায়গা থেকেও ব্যবহার করা যাবে। Java-তে access level আছে।</p>
+        <ul>
+          <li><b>public</b> → সবাই দেখতে বা ব্যবহার করতে পারে</li>
+          <li><b>private</b> → শুধু নিজের মধ্যে ব্যবহার করা যায় (Class-এর বাইরে নয়)</li>
+          <li><b>protected</b> → সীমিত</li>
+          <li>কিছু না লিখলে → package-private (একই package-এর ভিতরে)</li>
+        </ul>
+      </div>
+      <div class="card">
+        <h2>Package কী?</h2>
+        <p>Java-তে Package মানে একটা <b>Folder</b> বা Group যেখানে অনেকগুলো Related Class একই সাথে রাখা হয়।</p>
+        <div class="code">
+package school;
+
+<span class="keyword">public class</span> Student { ... }
+
+package school;
+
+<span class="keyword">public class</span> Teacher { ... }
+        </div>
+        <p>এখানে দুটো Class একই Package <b>school</b>-এর ভিতরে।</p>
+      </div>
+    </div>
+
+    <!-- 5: Class = Blueprint -->
+    <div class="section" data-index="5">
+      <h1>Class = নকশা / Blueprint / Template</h1>
+      <div class="card">
+        <p>Java-তে সবকিছুই Class-এর ভিতরে লিখতে হয়।</p>
+        <p>সহজে বুঝতে: Class বা Template হলো কম্পিউটারে আমি কেমন একটা <b>ফর্ম</b> দেখতে পাচ্ছি।</p>
+        <p>ধরি, স্কুলের ক্রীড়া প্রতিযোগিতা হবে। স্যাররা একটা আবেদন ফর্ম নির্ধারণ করলেন। সেখানে শুধু খালি জায়গা আছে — নাম, রোল, শ্রেণি, শাখা।</p>
+        <p><b>এই খালি ফর্মটাই হলো Class</b> — যেখানে শুধু নির্ধারণ করে রাখা হয়েছে কী কী তথ্য থাকবে।</p>
+      </div>
+      <div class="card">
+        <div class="code">
+<span class="keyword">public class</span> <span class="type">Student</span> {
+    String name;     <span class="comment">// নামের জায়গা</span>
+    int roll;        <span class="comment">// রোলের জায়গা</span>
+    String className;<span class="comment">// শ্রেণির জায়গা</span>
+    String section;  <span class="comment">// শাখার জায়গা</span>
+}
+        </div>
+        <p>এটি কেবল তথ্যের ছাঁচ বানায় না, বরং কাজের নিয়মও দেয়।</p>
+      </div>
+    </div>
+
+    <!-- 6: Object = ভরাট ফর্ম -->
+    <div class="section" data-index="6">
+      <h1>Object = ভরাট ফর্ম</h1>
+      <div class="card">
+        <p>যখন কোনো ছাত্র এই ফর্মটি পূরণ করে নিজের তথ্য লিখে ফেলে — তখন সেটা হয়ে যায় একটা <b>Object</b>।</p>
+        <p>ধরি রহিম ও করিম স্যারের কাছ থেকে ফর্ম নিলো এবং তথ্য দিয়ে পূরণ করলো। তখন সেটি Object-এ পরিণত হলো।</p>
+        <p>একটি Class-এ অনেকগুলো Object থাকতে পারে।</p>
+      </div>
+      <div class="card">
+        <div class="code">
+Student rahim = <span class="keyword">new</span> Student();
+rahim.name = <span class="string">"রহিম"</span>;
+rahim.roll = 5;
+rahim.className = <span class="string">"নবম"</span>;
+rahim.section = <span class="string">"ক"</span>;
+
+Student karim = <span class="keyword">new</span> Student();
+karim.name = <span class="string">"করিম"</span>;
+karim.roll = 12;
+karim.className = <span class="string">"নবম"</span>;
+karim.section = <span class="string">"খ"</span>;
+        </div>
+      </div>
+    </div>
+
+    <!-- 7: Full Student Code -->
+    <div class="section" data-index="7">
+      <h1>পুরো Student Program</h1>
+      <div class="card">
+        <div class="code" id="studentCode">
+<span class="keyword">public class</span> <span class="type">Student</span> {
+    String name;
+    int roll;
+
+    <span class="keyword">void</span> showInfo() {
+        System.out.println(<span class="string">"নাম: "</span> + name);
+        System.out.println(<span class="string">"রোল: "</span> + roll);
+    }
+
+    <span class="keyword">public static void</span> main(String[] args) {
+        <span class="comment">// রহিম এসে নতুন ফর্ম নিল</span>
+        Student rahim = <span class="keyword">new</span> Student();
+        rahim.name = <span class="string">"রহিম"</span>;
+        rahim.roll = 5;
+
+        <span class="comment">// করিম নিজেও একটা ফর্ম নিল</span>
+        Student karim = <span class="keyword">new</span> Student();
+        karim.name = <span class="string">"করিম"</span>;
+        karim.roll = 12;
+
+        System.out.println(<span class="string">"রহিমের ফর্ম:"</span>);
+        rahim.showInfo();
+
+        System.out.println(<span class="string">"করিমের ফর্ম:"</span>);
+        karim.showInfo();
+    }
+}
+        </div>
+        <button class="run-btn" onclick="runStudent()">▶ Run</button>
+        <div class="output" id="studentOut">
+রহিমের ফর্ম:
+নাম: রহিম
+রোল: 5
+করিমের ফর্ম:
+নাম: করিম
+রোল: 12
+        </div>
+      </div>
+      <div class="card">
+        <p><b>new Student()</b> মানে → নকশা থেকে একদম নতুন খালি ফর্ম তৈরি করা।</p>
+        <p><b>rahim.name = "রহিম"</b> মানে → সেই ফর্মের নামের ঘরে লেখা।</p>
+      </div>
+    </div>
+
+    <!-- 8: Data Types -->
+    <div class="section" data-index="8">
+      <h1>Data Type — কোনটা কী রাখে</h1>
+      <div class="card">
+        <table style="width:100%; border-collapse:collapse;">
+          <tr style="background:#2a2545;"><th style="padding:10px;">Type</th><th>কী রাখে</th><th>উদাহরণ</th></tr>
+          <tr><td style="padding:8px;"><b>int</b></td><td>পূর্ণ সংখ্যা</td><td>10, -5, 0</td></tr>
+          <tr><td style="padding:8px;"><b>float</b></td><td>দশমিক (ছোট)</td><td>3.14f, 99.5f</td></tr>
+          <tr><td style="padding:8px;"><b>double</b></td><td>দশমিক (বড়)</td><td>3.14159</td></tr>
+          <tr><td style="padding:8px;"><b>String</b></td><td>টেক্সট</td><td>"রহিম", "Hello"</td></tr>
+          <tr><td style="padding:8px;"><b>char</b></td><td>একটা অক্ষর</td><td>'A', 'ক'</td></tr>
+          <tr><td style="padding:8px;"><b>boolean</b></td><td>true / false</td><td>true</td></tr>
+          <tr><td style="padding:8px;"><b>long</b></td><td>বড় পূর্ণ সংখ্যা</td><td>1000000L</td></tr>
+          <tr><td style="padding:8px;"><b>byte</b></td><td>খুব ছোট সংখ্যা</td><td>-128 থেকে 127</td></tr>
+        </table>
+        <p style="margin-top:12px;"><b>মনে রাখার নিয়ম:</b> float লিখলে শেষে <b>f</b>, long লিখলে শেষে <b>L</b>, টেক্সট হলে সবসময় <b>" "</b> quotation।</p>
+      </div>
+    </div>
+
+    <!-- 9: Methods All Types -->
+    <div class="section" data-index="9">
+      <h1>Method-এর সব ধরন</h1>
+      <div class="card">
+        <h2>১. Return Type অনুযায়ী</h2>
+        <p><b>void Method</b> → কিছু ফেরত দেয় না → <code>void showInfo() { ... }</code></p>
+        <p><b>Return করা Method</b> → একটা মান ফেরত দেয় → <code>int getRoll() { return roll; }</code></p>
+      </div>
+      <div class="card">
+        <h2>২. Parameter অনুযায়ী</h2>
+        <p>No Parameter / With Parameter / Multiple Parameter</p>
+      </div>
+      <div class="card">
+        <h2>৩. static অনুযায়ী</h2>
+        <p><b>static</b> → object না বানিয়েই কল করা যায় (main method)<br>
+        <b>Non-static</b> → object বানিয়ে কল করতে হয়</p>
+      </div>
+      <div class="card">
+        <h2>৪. Access Modifier</h2>
+        <p>public / private / protected / default</p>
+      </div>
+      <div class="card">
+        <h2>৫. বিশেষ Method</h2>
+        <p>main, Constructor, Getter, Setter, Predefined, User-defined</p>
+      </div>
+      <div class="card">
+        <div class="code">
+<span class="keyword">public class</span> Student {
+    <span class="keyword">private</span> String name;
+    <span class="keyword">private</span> int roll;
+
+    <span class="comment">// Constructor</span>
+    Student(String n, int r) {
+        name = n;
+        roll = r;
+    }
+
+    <span class="comment">// Getter</span>
+    <span class="keyword">public</span> String getName() { <span class="keyword">return</span> name; }
+
+    <span class="comment">// Setter</span>
+    <span class="keyword">public void</span> setRoll(int r) { roll = r; }
+
+    <span class="comment">// void + non-static</span>
+    <span class="keyword">public void</span> showInfo() {
+        System.out.println(<span class="string">"নাম: "</span> + name);
+        System.out.println(<span class="string">"রোল: "</span> + roll);
+    }
+
+    <span class="keyword">public static void</span> welcome() {
+        System.out.println(<span class="string">"স্বাগতম"</span>);
+    }
+
+    <span class="keyword">public static void</span> main(String[] args) {
+        welcome();
+        Student rahim = <span class="keyword">new</span> Student(<span class="string">"রহিম"</span>, 5);
+        rahim.showInfo();
+    }
+}
+        </div>
+      </div>
+    </div>
+
+    <!-- 10: Mini Game -->
+    <div class="section" data-index="10">
+      <h1>মিনি গেম: Class vs Object ম্যাচ করো! 🎮</h1>
+      <div class="card">
+        <p>বাম পাশের কার্ডগুলো Class, ডান পাশেরগুলো Object। মিলিয়ে দাও!</p>
+        <div class="match-area" id="matchArea">
+          <div class="match-card" data-type="class" data-id="1">Student (নকশা)</div>
+          <div class="match-card" data-type="object" data-id="1">rahim = new Student()</div>
+          <div class="match-card" data-type="class" data-id="2">খালি ফর্ম</div>
+          <div class="match-card" data-type="object" data-id="2">রহিম পূরণ করা ফর্ম</div>
+          <div class="match-card" data-type="class" data-id="3">Blueprint</div>
+          <div class="match-card" data-type="object" data-id="3">karim object</div>
+        </div>
+        <p id="matchResult" style="margin-top:20px; font-size:1.3rem;"></p>
+      </div>
+    </div>
+
+    <!-- 11: Summary -->
+    <div class="section" data-index="11">
+      <h1>এক নজরে সারাংশ</h1>
+      <div class="card">
+        <ul>
+          <li><b>public static void main</b> → প্রোগ্রামের শুরু</li>
+          <li><b>System.out.println</b> → স্ক্রিনে দেখানো</li>
+          <li><b>void showInfo</b> → সাধারণ কাজের নিয়ম</li>
+          <li><b>int / String / double</b> → Data Type</li>
+          <li><b>Comment (//)</b> → নিজে বোঝার জন্য</li>
+          <li><b>Method</b> → কাজের ব্লক, বারবার ব্যবহার করা যায়</li>
+          <li><b>Class</b> = নকশা, <b>Object</b> = ভরাট ফর্ম</li>
+        </ul>
+      </div>
+      <div class="card" style="text-align:center; font-size:1.4rem;">
+        <p>🎉 অভিনন্দন! তুমি Java-এর বেসিক শেষ করেছো।</p>
+        <p>এখন থেকে তুমিও কম্পিউটারের সাথে কথা বলতে পারবে!</p>
+      </div>
+    </div>
+
+    <!-- Navigation -->
+    <div id="nav">
+      <button class="nav-btn" id="prevBtn" disabled>← আগের</button>
+      <div id="progress">১ / ১২</div>
+      <button class="nav-btn" id="nextBtn">পরের →</button>
+    </div>
   </div>
 </div>
 
 <script>
-  // Floating 0 & 1
-  const bits = document.getElementById('bits');
-  for (let i = 0; i < 18; i++) {
-    const el = document.createElement('div');
-    el.className = 'float-bit';
-    el.textContent = Math.random() > 0.5 ? '0' : '1';
-    el.style.left = Math.random() * 100 + 'vw';
-    el.style.animationDuration = (8 + Math.random() * 10) + 's';
-    el.style.animationDelay = Math.random() * 8 + 's';
-    bits.appendChild(el);
+// ========== Navigation ==========
+const sections = document.querySelectorAll('.section');
+let current = 0;
+const total = sections.length;
+
+function showSection(i) {
+  sections.forEach(s => s.classList.remove('active'));
+  sections[i].classList.add('active');
+  current = i;
+  document.getElementById('prevBtn').disabled = i === 0;
+  document.getElementById('nextBtn').disabled = i === total - 1;
+  document.getElementById('progress').textContent = `${i + 1} / ${total}`;
+  // Auto speak short intro
+  if (window.speechSynthesis) {
+    // optional short announce
   }
+}
 
-  let current = 1;
-  const total = 8;
+document.getElementById('prevBtn').onclick = () => { if(current>0) showSection(current-1); };
+document.getElementById('nextBtn').onclick = () => { if(current<total-1) showSection(current+1); };
 
-  function showLesson(n) {
-    document.querySelectorAll('.lesson').forEach(l => l.classList.remove('active'));
-    document.querySelector(`[data-lesson="${n}"]`).classList.add('active');
-    document.getElementById('progress').textContent = `লেসন ${n} / ${total}`;
-    document.getElementById('btnBack').style.visibility = n === 1 ? 'hidden' : 'visible';
-    document.getElementById('btnNext').textContent = n === total ? 'শেষ ✓' : 'পরে →';
-    window.speechSynthesis.cancel();
-  }
+// ========== Run Buttons ==========
+function runHello() {
+  const out = document.getElementById('helloOut');
+  out.style.display = 'block';
+  out.classList.add('glow');
+  setTimeout(()=>out.classList.remove('glow'), 1500);
+}
+function runStudent() {
+  const out = document.getElementById('studentOut');
+  out.style.display = 'block';
+  out.classList.add('glow');
+  setTimeout(()=>out.classList.remove('glow'), 1500);
+}
 
-  function nextLesson() {
-    if (current < total) {
-      current++;
-      showLesson(current);
+// ========== Mini Game ==========
+let selected = null;
+document.querySelectorAll('.match-card').forEach(card => {
+  card.onclick = () => {
+    if (card.classList.contains('correct')) return;
+    if (!selected) {
+      selected = card;
+      card.classList.add('selected');
+    } else {
+      if (selected === card) {
+        selected.classList.remove('selected');
+        selected = null;
+        return;
+      }
+      if (selected.dataset.id === card.dataset.id && selected.dataset.type !== card.dataset.type) {
+        selected.classList.add('correct');
+        card.classList.add('correct');
+        selected.classList.remove('selected');
+        selected = null;
+        checkWin();
+      } else {
+        selected.classList.add('wrong');
+        card.classList.add('wrong');
+        setTimeout(() => {
+          selected.classList.remove('wrong','selected');
+          card.classList.remove('wrong');
+          selected = null;
+        }, 800);
+      }
     }
+  };
+});
+function checkWin() {
+  if (document.querySelectorAll('.match-card.correct').length === 6) {
+    document.getElementById('matchResult').textContent = '🎉 দারুণ! সব মিলিয়ে দিয়েছো!';
   }
-  function prevLesson() {
-    if (current > 1) {
-      current--;
-      showLesson(current);
-    }
-  }
+}
 
-  // Speech
-  function speak(text) {
-    window.speechSynthesis.cancel();
-    const u = new SpeechSynthesisUtterance(text);
-    u.lang = 'bn-BD';
-    u.rate = 0.9;
-    window.speechSynthesis.speak(u);
+// ========== Speech ==========
+const speakBtn = document.getElementById('speakBtn');
+let speaking = false;
+const texts = [
+  "স্বাগতম Java শেখার জগতে। আজ আমরা মজার করে Java শিখব।",
+  "Java হলো একটি প্রোগ্রামিং ল্যাঙ্গুয়েজ। কম্পিউটার শুধু শূন্য আর এক বোঝে।",
+  "Hello.java হলো সোর্স কোড। javac দিয়ে কম্পাইল করে বাইটকোড হয়। তারপর JVM চালায়।",
+  "ফাইলের নাম আর ক্লাসের নাম একই হতে হবে। Hello ক্লাস হলে Hello.java ফাইল।",
+  "public মানে সবার জন্য খোলা। private মানে শুধু নিজের মধ্যে।",
+  "ক্লাস মানে নকশা বা ব্লুপ্রিন্ট। খালি ফর্মের মতো।",
+  "অবজেক্ট মানে ভরাট ফর্ম। রহিম আর করিম যখন ফর্ম পূরণ করলো তখন অবজেক্ট হলো।",
+  "এখন পুরো স্টুডেন্ট প্রোগ্রাম দেখো। রান করলে আউটপুট দেখাবে।",
+  "ডেটা টাইপ শেখো। int পূর্ণ সংখ্যা, String টেক্সট।",
+  "মেথডের অনেক ধরন আছে। void, return, static, getter setter।",
+  "এখন মিনি গেম খেলো। ক্লাস আর অবজেক্ট মিলিয়ে দাও।",
+  "অভিনন্দন! তুমি বেসিক শেষ করেছো।"
+];
+speakBtn.onclick = () => {
+  if (speaking) {
+    speechSynthesis.cancel();
+    speaking = false;
+    speakBtn.textContent = "🔊 কথা বলো";
+    speakBtn.classList.remove('speaking');
+    return;
   }
+  const u = new SpeechSynthesisUtterance(texts[current] || "চলো Java শিখি");
+  u.lang = 'bn-BD';
+  u.rate = 0.9;
+  speaking = true;
+  speakBtn.textContent = "⏹ থামাও";
+  speakBtn.classList.add('speaking');
+  u.onend = () => {
+    speaking = false;
+    speakBtn.textContent = "🔊 কথা বলো";
+    speakBtn.classList.remove('speaking');
+  };
+  speechSynthesis.speak(u);
+};
 
-  function speakCurrent() {
-    const texts = {
-      1: 'পৃথিবীতে অনেক মানুষ অনেক ভাষায় কথা বলে। কম্পিউটার শুধু শূন্য আর এক বোঝে।',
-      2: 'জাভা হলো একটা প্রোগ্রামিং ল্যাঙ্গুয়েজ। কম্পিউটারের সাথে কথা বলার ভাষা।',
-      3: 'সোর্স কোড থেকে কম্পাইলার বাইটকোড বানায়। তারপর জেভিএম সেটাকে শূন্য এক এ রূপান্তর করে।',
-      4: 'ক্লাস মানে হলো একটা খালি ফর্ম বা নকশা।',
-      5: 'যখন কেউ ফর্ম পূরণ করে তখন সেটা হয়ে যায় অবজেক্ট।',
-      6: 'এই প্রোগ্রামটি স্ক্রিনে হ্যালো ওয়ার্ল্ড লিখে দেখাবে।',
-      7: 'মেথড হলো কাজের ব্লক। একবার লিখে বারবার ব্যবহার করা যায়।',
-      8: 'অভিনন্দন! তুমি বেসিক জাভা শিখে ফেলেছ।'
-    };
-    speak(texts[current] || '');
-  }
+// ========== Simple 3D AI (Floating Robot) ==========
+const container = document.getElementById('canvas-container');
+const scene = new THREE.Scene();
+const camera = new THREE.PerspectiveCamera(50, 1, 0.1, 100);
+camera.position.z = 4;
+const renderer = new THREE.WebGLRenderer({ antialias:true, alpha:true });
+renderer.setSize(280, 320);
+renderer.setClearColor(0x000000, 0);
+container.appendChild(renderer.domElement);
 
-  // Start
-  showLesson(1);
+// Simple robot body
+const bodyMat = new THREE.MeshStandardMaterial({ color: 0x4ecdc4, metalness:0.3, roughness:0.4 });
+const body = new THREE.Mesh(new THREE.BoxGeometry(1.2, 1.5, 0.8), bodyMat);
+scene.add(body);
+
+const head = new THREE.Mesh(new THREE.BoxGeometry(0.9, 0.9, 0.9), bodyMat);
+head.position.y = 1.3;
+scene.add(head);
+
+// Eyes
+const eyeMat = new THREE.MeshBasicMaterial({ color: 0xffe66d });
+const eyeL = new THREE.Mesh(new THREE.SphereGeometry(0.15), eyeMat);
+eyeL.position.set(-0.25, 1.4, 0.5);
+const eyeR = eyeL.clone();
+eyeR.position.x = 0.25;
+scene.add(eyeL, eyeR);
+
+// Arms
+const armL = new THREE.Mesh(new THREE.BoxGeometry(0.3, 1, 0.3), bodyMat);
+armL.position.set(-0.9, 0.2, 0);
+const armR = armL.clone();
+armR.position.x = 0.9;
+scene.add(armL, armR);
+
+// Light
+const light = new THREE.DirectionalLight(0xffffff, 1);
+light.position.set(2, 3, 4);
+scene.add(light);
+scene.add(new THREE.AmbientLight(0x404060));
+
+let t = 0;
+function animate() {
+  requestAnimationFrame(animate);
+  t += 0.02;
+  body.position.y = Math.sin(t) * 0.15;
+  head.position.y = 1.3 + Math.sin(t) * 0.15;
+  eyeL.position.y = 1.4 + Math.sin(t) * 0.15;
+  eyeR.position.y = 1.4 + Math.sin(t) * 0.15;
+  armL.rotation.z = Math.sin(t * 1.5) * 0.4;
+  armR.rotation.z = -Math.sin(t * 1.5) * 0.4;
+  body.rotation.y = Math.sin(t * 0.5) * 0.2;
+  renderer.render(scene, camera);
+}
+animate();
+
+// Resize for mobile
+window.addEventListener('resize', () => {
+  const w = container.clientWidth;
+  const h = container.clientHeight;
+  camera.aspect = w / h;
+  camera.updateProjectionMatrix();
+  renderer.setSize(w, h);
+});
 </script>
 </body>
 </html>
