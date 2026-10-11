@@ -3,23 +3,15 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Java ৩ডি লার্নিং — পূর্ণাঙ্গ ভার্সন</title>
+<title>Java ৩ডি লার্নিং — বাচ্চাদের মতো মজার</title>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
 <style>
-  @import url('https://fonts.googleapis.com/css2?family=Hind+Siliguri:wght@400;600;700&family=Orbitron:wght@500;700&family=Fira+Code:wght@400;500&display=swap');
-
-  :root {
-    --primary: #00f5d4;
-    --secondary: #7b2cbf;
-    --accent: #ff6b6b;
-    --bg-dark: #0f0c29;
-  }
+  @import url('https://fonts.googleapis.com/css2?family=Hind+Siliguri:wght@400;600;700&family=Orbitron:wght@500;700&display=swap');
 
   * { margin: 0; padding: 0; box-sizing: border-box; }
-  
   body {
     font-family: 'Hind Siliguri', sans-serif;
-    background: linear-gradient(135deg, #0f0c29 0%, #302b63 50%, #24243e 100%);
+    background: linear-gradient(135deg, #0f0c29, #302b63, #24243e);
     color: #fff;
     overflow-x: hidden;
     min-height: 100vh;
@@ -30,7 +22,6 @@
     top: 0; left: 0;
     width: 100%; height: 100%;
     z-index: 0;
-    pointer-events: none;
   }
 
   .ui-layer {
@@ -38,300 +29,165 @@
     z-index: 10;
     max-width: 1100px;
     margin: 0 auto;
-    padding: 20px 16px 140px;
+    padding: 20px;
   }
 
   header {
     text-align: center;
-    padding: 28px 10px 16px;
+    padding: 30px 10px 10px;
   }
   header h1 {
     font-family: 'Orbitron', sans-serif;
-    font-size: clamp(1.8rem, 5vw, 2.6rem);
+    font-size: 2.4rem;
     background: linear-gradient(90deg, #00f5d4, #7b2cbf, #ff6b6b);
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
-    letter-spacing: 1px;
+    text-shadow: 0 0 30px rgba(0,245,212,0.4);
   }
-  header p { opacity: 0.9; margin-top: 8px; font-size: 1.1rem; }
+  header p { opacity: 0.85; margin-top: 8px; font-size: 1.1rem; }
 
   .ai-bubble {
-    background: rgba(255,255,255,0.07);
-    backdrop-filter: blur(14px);
-    border: 1px solid rgba(255,255,255,0.12);
-    border-radius: 22px;
-    padding: 22px 26px;
-    margin: 18px 0;
-    box-shadow: 0 12px 40px rgba(0,0,0,0.35);
-    transition: transform 0.35s ease, box-shadow 0.35s ease;
+    background: rgba(255,255,255,0.08);
+    backdrop-filter: blur(12px);
+    border: 1px solid rgba(255,255,255,0.15);
+    border-radius: 24px;
+    padding: 22px 28px;
+    margin: 20px 0;
+    position: relative;
+    box-shadow: 0 10px 40px rgba(0,0,0,0.3);
+    transition: all 0.4s ease;
   }
-  .ai-bubble:hover {
-    transform: translateY(-4px);
-    box-shadow: 0 18px 50px rgba(0,245,212,0.18);
-  }
+  .ai-bubble:hover { transform: translateY(-3px); box-shadow: 0 15px 50px rgba(0,245,212,0.15); }
 
   .section-title {
-    font-size: 1.55rem;
+    font-size: 1.6rem;
     font-weight: 700;
-    margin-bottom: 14px;
-    color: var(--primary);
+    margin-bottom: 12px;
+    color: #00f5d4;
     display: flex;
     align-items: center;
     gap: 10px;
   }
 
   .content-box {
-    background: rgba(0,0,0,0.28);
-    border-radius: 14px;
-    padding: 16px 18px;
-    margin: 12px 0;
-    line-height: 1.75;
+    background: rgba(0,0,0,0.25);
+    border-radius: 16px;
+    padding: 18px;
+    margin: 14px 0;
+    line-height: 1.7;
     font-size: 1.05rem;
   }
 
   .code-block {
-    background: #12122a;
+    background: #1a1a2e;
     border-radius: 12px;
-    padding: 16px 18px;
-    font-family: 'Fira Code', monospace;
-    font-size: 0.9rem;
+    padding: 16px;
+    font-family: 'Courier New', monospace;
+    font-size: 0.95rem;
     overflow-x: auto;
-    border-left: 4px solid var(--secondary);
-    margin: 14px 0;
+    border-left: 4px solid #7b2cbf;
+    margin: 12px 0;
     position: relative;
   }
-  .code-block pre { margin: 0; white-space: pre-wrap; }
+  .code-block .glow { color: #00f5d4; text-shadow: 0 0 8px #00f5d4; }
 
   .flowchart {
     display: flex;
     flex-wrap: wrap;
-    gap: 10px;
+    gap: 12px;
     justify-content: center;
-    align-items: center;
     margin: 20px 0;
   }
   .flow-box {
     background: linear-gradient(145deg, #7b2cbf, #5a189a);
-    padding: 13px 18px;
+    padding: 14px 20px;
     border-radius: 12px;
     font-weight: 600;
-    text-align: center;
-    box-shadow: 0 6px 20px rgba(123,44,191,0.45);
-    transition: transform 0.25s;
-    min-width: 110px;
+    box-shadow: 0 6px 20px rgba(123,44,191,0.4);
+    transition: all 0.3s;
   }
-  .flow-box:hover { transform: scale(1.06); }
-  .arrow { font-size: 1.7rem; color: var(--primary); }
+  .flow-box:hover { transform: scale(1.05); }
+  .arrow { font-size: 1.8rem; color: #00f5d4; align-self: center; }
 
   .btn {
     background: linear-gradient(90deg, #00f5d4, #7b2cbf);
     border: none;
     color: #fff;
-    padding: 11px 24px;
+    padding: 12px 28px;
     border-radius: 50px;
-    font-size: 0.98rem;
+    font-size: 1rem;
     font-weight: 600;
     cursor: pointer;
-    margin: 6px 5px;
+    margin: 8px 6px;
     transition: all 0.3s;
     box-shadow: 0 4px 15px rgba(0,245,212,0.3);
-    font-family: 'Hind Siliguri', sans-serif;
   }
-  .btn:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 8px 25px rgba(0,245,212,0.5);
-  }
-  .btn.secondary {
-    background: linear-gradient(90deg, #ff6b6b, #ee5a24);
-  }
-  .btn.success {
-    background: linear-gradient(90deg, #00b894, #00cec9);
-  }
-  .btn:disabled {
-    opacity: 0.55;
-    cursor: not-allowed;
-    transform: none;
-  }
+  .btn:hover { transform: translateY(-2px); box-shadow: 0 8px 25px rgba(0,245,212,0.5); }
+  .btn.secondary { background: linear-gradient(90deg, #ff6b6b, #ee5a24); }
 
   .highlight {
-    background: rgba(0,245,212,0.18);
+    background: rgba(0,245,212,0.15);
     padding: 2px 8px;
     border-radius: 6px;
-    color: var(--primary);
+    color: #00f5d4;
   }
 
-  .table-container { overflow-x: auto; margin: 14px 0; }
+  .table-container { overflow-x: auto; margin: 16px 0; }
   table {
     width: 100%;
     border-collapse: collapse;
-    background: rgba(0,0,0,0.32);
+    background: rgba(0,0,0,0.3);
     border-radius: 12px;
     overflow: hidden;
   }
   th, td {
-    padding: 11px 14px;
+    padding: 12px 16px;
     text-align: left;
-    border-bottom: 1px solid rgba(255,255,255,0.08);
+    border-bottom: 1px solid rgba(255,255,255,0.1);
   }
-  th { background: rgba(123,44,191,0.55); color: var(--primary); }
-
-  .story-card {
-    background: linear-gradient(145deg, rgba(123,44,191,0.22), rgba(0,245,212,0.08));
-    border-radius: 14px;
-    padding: 18px;
-    margin: 14px 0;
-    border: 1px solid rgba(0,245,212,0.18);
-  }
-
-  /* Terminal / Output */
-  .terminal {
-    background: #0d1117;
-    border-radius: 12px;
-    padding: 0;
-    margin: 14px 0;
-    overflow: hidden;
-    border: 1px solid #30363d;
-    font-family: 'Fira Code', monospace;
-  }
-  .terminal-header {
-    background: #161b22;
-    padding: 10px 16px;
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    border-bottom: 1px solid #30363d;
-  }
-  .dot { width: 12px; height: 12px; border-radius: 50%; }
-  .dot.red { background: #ff5f56; }
-  .dot.yellow { background: #ffbd2e; }
-  .dot.green { background: #27c93f; }
-  .terminal-body {
-    padding: 16px;
-    min-height: 120px;
-    color: #7ee787;
-    font-size: 0.95rem;
-    line-height: 1.6;
-    white-space: pre-wrap;
-  }
-  .terminal-body .prompt { color: #58a6ff; }
-  .terminal-body .output { color: #7ee787; }
-  .terminal-body .error { color: #ff7b72; }
-
-  /* Mini Game */
-  .game-area {
-    background: rgba(0,0,0,0.35);
-    border-radius: 16px;
-    padding: 20px;
-    margin-top: 12px;
-  }
-  .game-score {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-bottom: 16px;
-    font-size: 1.15rem;
-  }
-  .match-board {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 16px;
-  }
-  @media (max-width: 600px) {
-    .match-board { grid-template-columns: 1fr; }
-  }
-  .match-column h4 {
-    text-align: center;
-    margin-bottom: 12px;
-    color: var(--primary);
-  }
-  .match-item {
-    background: rgba(123,44,191,0.35);
-    border: 2px solid transparent;
-    border-radius: 12px;
-    padding: 14px 16px;
-    margin-bottom: 10px;
-    cursor: pointer;
-    transition: all 0.25s;
-    text-align: center;
-    font-weight: 600;
-    user-select: none;
-  }
-  .match-item:hover { background: rgba(123,44,191,0.55); }
-  .match-item.selected {
-    border-color: var(--primary);
-    background: rgba(0,245,212,0.2);
-    box-shadow: 0 0 18px rgba(0,245,212,0.35);
-  }
-  .match-item.correct {
-    border-color: #00b894;
-    background: rgba(0,184,148,0.25);
-    pointer-events: none;
-  }
-  .match-item.wrong {
-    border-color: var(--accent);
-    background: rgba(255,107,107,0.25);
-    animation: shake 0.4s;
-  }
-  @keyframes shake {
-    0%,100% { transform: translateX(0); }
-    25% { transform: translateX(-6px); }
-    75% { transform: translateX(6px); }
-  }
+  th { background: rgba(123,44,191,0.5); color: #00f5d4; }
 
   .control-bar {
     position: fixed;
-    bottom: 18px;
+    bottom: 20px;
     left: 50%;
     transform: translateX(-50%);
-    background: rgba(0,0,0,0.75);
-    backdrop-filter: blur(12px);
-    padding: 12px 22px;
+    background: rgba(0,0,0,0.7);
+    backdrop-filter: blur(10px);
+    padding: 12px 24px;
     border-radius: 50px;
     display: flex;
-    gap: 10px;
+    gap: 12px;
     z-index: 100;
     box-shadow: 0 8px 30px rgba(0,0,0,0.5);
-    flex-wrap: wrap;
-    justify-content: center;
   }
 
-  .wave-indicator {
-    position: fixed;
-    top: 20px;
-    right: 20px;
-    background: rgba(0,245,212,0.15);
-    border: 1px solid var(--primary);
-    padding: 8px 16px;
-    border-radius: 30px;
-    font-size: 0.9rem;
-    z-index: 50;
-    display: none;
-  }
-  .wave-indicator.active { display: block; animation: pulse 1.5s infinite; }
-  @keyframes pulse {
-    0%,100% { opacity: 0.7; }
-    50% { opacity: 1; }
+  .story-card {
+    background: linear-gradient(145deg, rgba(123,44,191,0.2), rgba(0,245,212,0.1));
+    border-radius: 16px;
+    padding: 20px;
+    margin: 16px 0;
+    border: 1px solid rgba(0,245,212,0.2);
   }
 
   @media (max-width: 700px) {
-    .flowchart { flex-direction: column; }
+    header h1 { font-size: 1.7rem; }
+    .flowchart { flex-direction: column; align-items: center; }
     .arrow { transform: rotate(90deg); }
-    .control-bar { width: 94%; }
   }
 </style>
 </head>
 <body>
 
 <div id="canvas-container"></div>
-<div class="wave-indicator" id="waveIndicator">👋 AI হাত নাড়াচ্ছে...</div>
 
 <div class="ui-layer">
   <header>
     <h1>🚀 Java ৩ডি লার্নিং</h1>
-    <p>গল্প + ৩ডি AI + কোড রান + মিনি গেম — সব এক জায়গায়</p>
+    <p>গল্পের মতো করে Java শেখো — AI বন্ধু তোমার সাথে আছে!</p>
   </header>
 
-  <!-- 1. Introduction -->
+  <!-- Section 1: Introduction -->
   <div class="ai-bubble" id="sec1">
     <div class="section-title">🌍 ভাষা কেন দরকার?</div>
     <div class="content-box">
@@ -342,24 +198,25 @@
     <button class="btn" onclick="speak('sec1')">🔊 আবার শোনো</button>
   </div>
 
-  <!-- 2. 0 and 1 -->
+  <!-- Section 2: 0 and 1 -->
   <div class="ai-bubble" id="sec2">
     <div class="section-title">⚡ ০ এবং ১ মানে কী?</div>
     <div class="content-box">
       <b>১ (One)</b> = Current পাস হচ্ছে → <span class="highlight">ON</span><br>
       <b>০ (Zero)</b> = Current পাস হচ্ছে না → <span class="highlight">OFF</span>
       <br><br>
-      AI-এর ডান হাতে <b>1</b> আর বাম হাতে <b>0</b> ভাসছে। এটাই কম্পিউটারের আসল ভাষা।
+      AI এর ডান হাতে <b>1</b> আর বাম হাতে <b>0</b> ভাসছে। এটাই কম্পিউটারের আসল ভাষা।
     </div>
     <button class="btn" onclick="speak('sec2')">🔊 আবার শোনো</button>
   </div>
 
-  <!-- 3. Source → Bytecode -->
+  <!-- Section 3: Source → Compiler → Bytecode -->
   <div class="ai-bubble" id="sec3">
     <div class="section-title">📂 Source Code থেকে Bytecode</div>
     <div class="content-box">
       আমরা যে কোড লিখি সেটা <b>Source Code</b>। উদাহরণ: <code>Hello.java</code>
     </div>
+
     <div class="flowchart">
       <div class="flow-box">Hello.java<br><small>Source Code</small></div>
       <div class="arrow">→</div>
@@ -367,48 +224,51 @@
       <div class="arrow">→</div>
       <div class="flow-box">Hello.class<br><small>Bytecode</small></div>
       <div class="arrow">→</div>
-      <div class="flow-box">JVM<br><small>Virtual Machine</small></div>
+      <div class="flow-box">JVM<br><small>Java Virtual Machine</small></div>
       <div class="arrow">→</div>
       <div class="flow-box">0 & 1<br><small>Machine Code</small></div>
     </div>
+
     <div class="content-box">
-      <b>Compiler</b> তোমার কোডকে কম্পিউটার বোঝার ভাষায় রূপান্তর করে। Java-তে <code>javac</code> সরাসরি ০-১ না করে <b>Bytecode</b> তৈরি করে। তারপর <b>JVM</b> সেটাকে চালায়।
+      <b>Compiler</b> হলো এমন সফটওয়্যার যা তোমার লেখা কোডকে কম্পিউটার বুঝতে পারে এমন ভাষায় রূপান্তর করে।
+      <br>
+      Java-তে <code>javac</code> সরাসরি ০-১-এ না নিয়ে <b>Bytecode</b> নামের মাঝামাঝি ভাষায় পরিণত করে। তারপর <b>JVM</b> সেটাকে ০-১ করে চালায়।
     </div>
     <button class="btn" onclick="speak('sec3')">🔊 আবার শোনো</button>
   </div>
 
-  <!-- 4. Compiler vs Interpreter -->
+  <!-- Section 4: Compiler vs Interpreter -->
   <div class="ai-bubble" id="sec4">
     <div class="section-title">🔄 Compiler vs Interpreter</div>
     <div class="content-box">
       <b>Compiler</b> → পুরো কোড একবারে অনুবাদ করে তারপর চালায় (C, C++, Java)।
       <br>
-      <b>Interpreter</b> → লাইন বাই লাইন বুঝে চালায় (Python, JavaScript) — দোভাষীর মতো।
+      <b>Interpreter</b> → লাইন বাই লাইন বুঝে চালায় (Python, JavaScript)। দোভাষীর মতো।
     </div>
     <button class="btn" onclick="speak('sec4')">🔊 আবার শোনো</button>
   </div>
 
-  <!-- 5. Java vs JS -->
+  <!-- Section 5: Java vs JavaScript -->
   <div class="ai-bubble" id="sec5">
     <div class="section-title">⚔️ Java vs JavaScript</div>
     <div class="table-container">
       <table>
         <tr><th>বিষয়</th><th>Java</th><th>JavaScript</th></tr>
-        <tr><td>মূল ব্যবহার</td><td>Android App, Backend, Enterprise</td><td>Website Interactive, Frontend</td></tr>
-        <tr><td>উদাহরণ</td><td>Banking, Minecraft Java Edition</td><td>Button click, Animation, React</td></tr>
+        <tr><td>মূল ব্যবহার</td><td>Android App, Backend, Enterprise</td><td>Website Interactive করা, Frontend</td></tr>
+        <tr><td>উদাহরণ</td><td>Banking system, Minecraft Java</td><td>Button click, Animation, React</td></tr>
         <tr><td>চলার জায়গা</td><td>JVM</td><td>Browser (V8) / Node.js</td></tr>
       </table>
     </div>
     <button class="btn" onclick="speak('sec5')">🔊 আবার শোনো</button>
   </div>
 
-  <!-- 6. Class = Blueprint -->
+  <!-- Section 6: Class = Blueprint -->
   <div class="ai-bubble" id="sec6">
     <div class="section-title">📝 Class মানে Blueprint (নকশা)</div>
     <div class="story-card">
       ধরো স্কুলে ক্রিকেট টুর্নামেন্ট হচ্ছে। স্যার একটা খালি ফর্ম বানিয়েছেন। সেই ফর্মটাই হলো <b>Class</b>।
       <br><br>
-      ফর্মে যা যা থাকবে: নাম, রোল, শ্রেণি, শাখা — এগুলোই Class-এর Variable।
+      ফর্মে যা যা থাকবে: নাম, রোল, শ্রেণি, শাখা — এগুলোই Class-এর ভেতরের Variable।
     </div>
     <div class="code-block">
 <pre>public class Student {
@@ -421,7 +281,7 @@
     <button class="btn" onclick="speak('sec6')">🔊 আবার শোনো</button>
   </div>
 
-  <!-- 7. Object -->
+  <!-- Section 7: Object -->
   <div class="ai-bubble" id="sec7">
     <div class="section-title">🧒 Object মানে ভরাট ফর্ম</div>
     <div class="story-card">
@@ -445,10 +305,10 @@ karim.roll = 12;</pre>
     <button class="btn" onclick="speak('sec7')">🔊 আবার শোনো</button>
   </div>
 
-  <!-- 8. Full Code + Run Button -->
+  <!-- Section 8: Full Example -->
   <div class="ai-bubble" id="sec8">
-    <div class="section-title">💻 পুরো উদাহরণ কোড + রান করো</div>
-    <div class="code-block" id="fullCode">
+    <div class="section-title">💻 পুরো উদাহরণ কোড</div>
+    <div class="code-block">
 <pre>public class Student {
     String name;
     int roll;
@@ -483,22 +343,10 @@ karim.roll = 12;</pre>
     }
 }</pre>
     </div>
-
-    <button class="btn success" id="runBtn" onclick="runCode()">▶️ কোড রান করো</button>
     <button class="btn" onclick="speak('sec8')">🔊 আবার শোনো</button>
-
-    <div class="terminal" id="terminal" style="display:none;">
-      <div class="terminal-header">
-        <div class="dot red"></div>
-        <div class="dot yellow"></div>
-        <div class="dot green"></div>
-        <span style="margin-left:10px;opacity:0.7;font-size:0.85rem;">Output</span>
-      </div>
-      <div class="terminal-body" id="terminalBody"></div>
-    </div>
   </div>
 
-  <!-- 9. Data Types -->
+  <!-- Section 9: Data Types -->
   <div class="ai-bubble" id="sec9">
     <div class="section-title">📦 Data Types</div>
     <div class="table-container">
@@ -517,7 +365,7 @@ karim.roll = 12;</pre>
     <button class="btn" onclick="speak('sec9')">🔊 আবার শোনো</button>
   </div>
 
-  <!-- 10. Methods -->
+  <!-- Section 10: Methods -->
   <div class="ai-bubble" id="sec10">
     <div class="section-title">⚙️ Method (কাজের ব্লক)</div>
     <div class="content-box">
@@ -530,11 +378,11 @@ karim.roll = 12;</pre>
     <button class="btn" onclick="speak('sec10')">🔊 আবার শোনো</button>
   </div>
 
-  <!-- 11. All Method Types -->
+  <!-- Section 11: All Types of Methods -->
   <div class="ai-bubble" id="sec11">
     <div class="section-title">📚 Method-এর সব ধরন</div>
     
-    <h3 style="color:#00f5d4;margin:14px 0 8px">১. Return Type অনুযায়ী</h3>
+    <h3 style="color:#00f5d4;margin:16px 0 8px">১. Return Type অনুযায়ী</h3>
     <div class="table-container">
       <table>
         <tr><th>ধরন</th><th>মানে</th><th>উদাহরণ</th></tr>
@@ -543,7 +391,7 @@ karim.roll = 12;</pre>
       </table>
     </div>
 
-    <h3 style="color:#00f5d4;margin:14px 0 8px">২. Parameter অনুযায়ী</h3>
+    <h3 style="color:#00f5d4;margin:16px 0 8px">২. Parameter অনুযায়ী</h3>
     <div class="table-container">
       <table>
         <tr><th>ধরন</th><th>মানে</th></tr>
@@ -553,14 +401,14 @@ karim.roll = 12;</pre>
       </table>
     </div>
 
-    <h3 style="color:#00f5d4;margin:14px 0 8px">৩. static অনুযায়ী</h3>
+    <h3 style="color:#00f5d4;margin:16px 0 8px">৩. static অনুযায়ী</h3>
     <div class="content-box">
       <b>static</b> → object না বানিয়েই কল করা যায় (main method)।
       <br>
       <b>Non-static</b> → object বানিয়ে কল করতে হয়।
     </div>
 
-    <h3 style="color:#00f5d4;margin:14px 0 8px">৪. বিশেষ Method</h3>
+    <h3 style="color:#00f5d4;margin:16px 0 8px">৪. বিশেষ Method</h3>
     <div class="content-box">
       • <b>main</b> → প্রোগ্রাম শুরু<br>
       • <b>Constructor</b> → object তৈরির সময় অটো চলে<br>
@@ -569,187 +417,109 @@ karim.roll = 12;</pre>
     <button class="btn" onclick="speak('sec11')">🔊 আবার শোনো</button>
   </div>
 
-  <!-- 12. Mini Game -->
-  <div class="ai-bubble" id="sec12">
-    <div class="section-title">🎮 মিনি গেম: Class ↔ Object ম্যাচিং</div>
-    <div class="content-box">
-      বাম দিকের <b>Class</b>-এর সাথে ডান দিকের সঠিক <b>Object</b> মিলিয়ে দাও।  
-      সঠিক ম্যাচ করলে স্কোর বাড়বে!
-    </div>
-
-    <div class="game-area">
-      <div class="game-score">
-        <div>স্কোর: <span id="score">0</span> / 4</div>
-        <div>সময়: <span id="timer">60</span>s</div>
-      </div>
-
-      <div class="match-board">
-        <div class="match-column">
-          <h4>📘 Class</h4>
-          <div id="classList"></div>
-        </div>
-        <div class="match-column">
-          <h4>🧒 Object</h4>
-          <div id="objectList"></div>
-        </div>
-      </div>
-
-      <div style="text-align:center;margin-top:18px;">
-        <button class="btn success" id="startGameBtn" onclick="startGame()">🎮 গেম শুরু করো</button>
-        <button class="btn secondary" onclick="resetGame()" style="display:none;" id="resetBtn">🔄 আবার খেলো</button>
-      </div>
-      <div id="gameMessage" style="text-align:center;margin-top:14px;font-size:1.15rem;font-weight:600;"></div>
-    </div>
-  </div>
-
+  <div style="height:120px"></div>
 </div>
 
 <!-- Control Bar -->
 <div class="control-bar">
-  <button class="btn" onclick="startTour()">▶️ ট্যুর শুরু</button>
+  <button class="btn" onclick="startTour()">▶️ ট্যুর শুরু করো</button>
   <button class="btn secondary" onclick="stopSpeaking()">⏹️ থামাও</button>
-  <button class="btn" onclick="waveHand()">👋 হাত নাড়াও</button>
 </div>
 
 <script>
-// ==================== THREE.JS 3D CHARACTER ====================
+// ========== Three.js 3D AI Character ==========
 const scene = new THREE.Scene();
-const camera = new THREE.PerspectiveCamera(55, window.innerWidth / window.innerHeight, 0.1, 1000);
+const camera = new THREE.PerspectiveCamera(60, window.innerWidth / window.innerHeight, 0.1, 1000);
 const renderer = new THREE.WebGLRenderer({ alpha: true, antialias: true });
 renderer.setSize(window.innerWidth, window.innerHeight);
 renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
 document.getElementById('canvas-container').appendChild(renderer.domElement);
 
-// Lights
-const ambient = new THREE.AmbientLight(0x404060, 0.7);
+// Soft ambient + point light
+const ambient = new THREE.AmbientLight(0x404060, 0.6);
 scene.add(ambient);
-const pointLight = new THREE.PointLight(0x00f5d4, 1.4, 60);
-pointLight.position.set(4, 6, 5);
+const pointLight = new THREE.PointLight(0x00f5d4, 1.2, 50);
+pointLight.position.set(5, 5, 5);
 scene.add(pointLight);
-const pointLight2 = new THREE.PointLight(0x7b2cbf, 0.8, 40);
-pointLight2.position.set(-5, 3, 2);
-scene.add(pointLight2);
 
-// Character Group
-const character = new THREE.Group();
+// Simple 3D AI character (floating robot head + body)
+const group = new THREE.Group();
 
 // Body
-const bodyGeo = new THREE.CapsuleGeometry(0.55, 1.1, 8, 16);
-const bodyMat = new THREE.MeshStandardMaterial({
-  color: 0x7b2cbf, metalness: 0.35, roughness: 0.35,
-  emissive: 0x3a0ca3, emissiveIntensity: 0.18
+const bodyGeo = new THREE.CapsuleGeometry(0.6, 1.2, 8, 16);
+const bodyMat = new THREE.MeshStandardMaterial({ 
+  color: 0x7b2cbf, 
+  metalness: 0.3, 
+  roughness: 0.4,
+  emissive: 0x3a0ca3,
+  emissiveIntensity: 0.2
 });
 const body = new THREE.Mesh(bodyGeo, bodyMat);
-body.position.y = -0.2;
-character.add(body);
+body.position.y = -0.3;
+group.add(body);
 
 // Head
-const headGeo = new THREE.SphereGeometry(0.48, 32, 32);
-const headMat = new THREE.MeshStandardMaterial({
-  color: 0x00f5d4, metalness: 0.55, roughness: 0.25,
-  emissive: 0x00f5d4, emissiveIntensity: 0.12
+const headGeo = new THREE.SphereGeometry(0.55, 32, 32);
+const headMat = new THREE.MeshStandardMaterial({ 
+  color: 0x00f5d4, 
+  metalness: 0.5, 
+  roughness: 0.3,
+  emissive: 0x00f5d4,
+  emissiveIntensity: 0.15
 });
 const head = new THREE.Mesh(headGeo, headMat);
-head.position.y = 1.05;
-character.add(head);
+head.position.y = 1.1;
+group.add(head);
 
 // Eyes
-const eyeGeo = new THREE.SphereGeometry(0.11, 16, 16);
+const eyeGeo = new THREE.SphereGeometry(0.12, 16, 16);
 const eyeMat = new THREE.MeshBasicMaterial({ color: 0xffffff });
 const leftEye = new THREE.Mesh(eyeGeo, eyeMat);
-leftEye.position.set(-0.17, 1.12, 0.4);
+leftEye.position.set(-0.2, 1.2, 0.45);
 const rightEye = new THREE.Mesh(eyeGeo, eyeMat);
-rightEye.position.set(0.17, 1.12, 0.4);
-character.add(leftEye);
-character.add(rightEye);
-
-// Pupils
-const pupilGeo = new THREE.SphereGeometry(0.05, 12, 12);
-const pupilMat = new THREE.MeshBasicMaterial({ color: 0x111111 });
-const leftPupil = new THREE.Mesh(pupilGeo, pupilMat);
-leftPupil.position.set(-0.17, 1.12, 0.48);
-const rightPupil = new THREE.Mesh(pupilGeo, pupilMat);
-rightPupil.position.set(0.17, 1.12, 0.48);
-character.add(leftPupil);
-character.add(rightPupil);
-
-// Arms (for waving)
-const armGeo = new THREE.CapsuleGeometry(0.12, 0.55, 6, 8);
-const armMat = new THREE.MeshStandardMaterial({
-  color: 0x9b5de5, metalness: 0.3, roughness: 0.4
-});
-
-const leftArm = new THREE.Mesh(armGeo, armMat);
-leftArm.position.set(-0.75, 0.35, 0);
-leftArm.rotation.z = 0.4;
-character.add(leftArm);
-
-const rightArm = new THREE.Mesh(armGeo, armMat);
-rightArm.position.set(0.75, 0.35, 0);
-rightArm.rotation.z = -0.4;
-character.add(rightArm);
+rightEye.position.set(0.2, 1.2, 0.45);
+group.add(leftEye);
+group.add(rightEye);
 
 // Floating 0 and 1
-const zeroGeo = new THREE.TorusGeometry(0.22, 0.07, 16, 32);
-const oneGeo = new THREE.BoxGeometry(0.1, 0.5, 0.1);
-const numMat = new THREE.MeshStandardMaterial({
-  color: 0xff6b6b, emissive: 0xff6b6b, emissiveIntensity: 0.45
-});
-const zeroMesh = new THREE.Mesh(zeroGeo, numMat);
-zeroMesh.position.set(-1.9, 0.9, 0);
-const oneMesh = new THREE.Mesh(oneGeo, numMat.clone());
-oneMesh.position.set(1.9, 0.9, 0);
-character.add(zeroMesh);
-character.add(oneMesh);
+const zeroGeo = new THREE.TorusGeometry(0.25, 0.08, 16, 32);
+const oneGeo = new THREE.BoxGeometry(0.12, 0.6, 0.12);
+const numMat = new THREE.MeshStandardMaterial({ color: 0xff6b6b, emissive: 0xff6b6b, emissiveIntensity: 0.4 });
+const zero = new THREE.Mesh(zeroGeo, numMat);
+zero.position.set(-1.8, 0.8, 0);
+const one = new THREE.Mesh(oneGeo, numMat.clone());
+one.position.set(1.8, 0.8, 0);
+group.add(zero);
+group.add(one);
 
-scene.add(character);
-camera.position.set(0, 0.6, 5.8);
+scene.add(group);
+camera.position.z = 6;
+camera.position.y = 0.5;
 
-// Animation state
+// Animation
 let time = 0;
-let isWaving = false;
-let waveTimer = 0;
-
 function animate() {
   requestAnimationFrame(animate);
   time += 0.016;
-
-  // Floating body
-  character.position.y = Math.sin(time * 1.15) * 0.22;
-  character.rotation.y = Math.sin(time * 0.35) * 0.12;
-
-  // 0 and 1 floating + rotating
-  zeroMesh.rotation.x += 0.018;
-  zeroMesh.rotation.y += 0.025;
-  oneMesh.rotation.y += 0.035;
-  zeroMesh.position.y = 0.9 + Math.cos(time * 1.7) * 0.14;
-  oneMesh.position.y = 0.9 + Math.sin(time * 1.9) * 0.14;
-
+  
+  group.position.y = Math.sin(time * 1.2) * 0.25;
+  group.rotation.y = Math.sin(time * 0.4) * 0.15;
+  
+  zero.rotation.x += 0.02;
+  zero.rotation.y += 0.03;
+  one.rotation.y += 0.04;
+  one.position.y = 0.8 + Math.sin(time * 2) * 0.15;
+  zero.position.y = 0.8 + Math.cos(time * 1.8) * 0.15;
+  
   // Eye blink
-  if (Math.sin(time * 2.8) > 0.96) {
-    leftEye.scale.y = 0.15;
-    rightEye.scale.y = 0.15;
+  if (Math.sin(time * 3) > 0.95) {
+    leftEye.scale.y = 0.1;
+    rightEye.scale.y = 0.1;
   } else {
     leftEye.scale.y = 1;
     rightEye.scale.y = 1;
   }
-
-  // Hand waving
-  if (isWaving) {
-    waveTimer += 0.016;
-    rightArm.rotation.z = -0.4 + Math.sin(waveTimer * 8) * 0.9;
-    leftArm.rotation.z = 0.4 + Math.sin(waveTimer * 7 + 1) * 0.5;
-    if (waveTimer > 2.2) {
-      isWaving = false;
-      waveTimer = 0;
-      document.getElementById('waveIndicator').classList.remove('active');
-    }
-  } else {
-    // Idle subtle arm movement
-    rightArm.rotation.z = -0.4 + Math.sin(time * 1.3) * 0.15;
-    leftArm.rotation.z = 0.4 + Math.cos(time * 1.1) * 0.12;
-  }
-
+  
   renderer.render(scene, camera);
 }
 animate();
@@ -760,13 +530,7 @@ window.addEventListener('resize', () => {
   renderer.setSize(window.innerWidth, window.innerHeight);
 });
 
-function waveHand() {
-  isWaving = true;
-  waveTimer = 0;
-  document.getElementById('waveIndicator').classList.add('active');
-}
-
-// ==================== SPEECH ====================
+// ========== Speech Synthesis ==========
 const texts = {
   sec1: "পৃথিবীতে মানুষ অনেক ভাষায় কথা বলে। তাই সবাই যাতে একে অপরের সাথে কথা বলতে পারে, সেজন্য ইংলিশকে সাধারণ ভাষা হিসেবে নেওয়া হয়েছে। কম্পিউটারও ঠিক তেমনই। সে আমাদের বাংলা বা ইংরেজি বোঝে না। তার নিজস্ব ভাষা আছে — শূন্য এবং এক।",
   sec2: "এক মানে কারেন্ট পাস হচ্ছে, অর্থাৎ অন। শূন্য মানে কারেন্ট পাস হচ্ছে না, অর্থাৎ অফ। এটাই কম্পিউটারের আসল ভাষা।",
@@ -775,7 +539,7 @@ const texts = {
   sec5: "জাভা আর জাভাস্ক্রিপ্ট নাম কাছাকাছি হলেও সম্পূর্ণ আলাদা। জাভা অ্যান্ড্রয়েড অ্যাপ আর ব্যাকএন্ডে ব্যবহার হয়। জাভাস্ক্রিপ্ট ওয়েবসাইটকে ইন্টারঅ্যাকটিভ করে।",
   sec6: "ক্লাস মানে ব্লুপ্রিন্ট বা নকশা। স্কুলের টুর্নামেন্টের খালি ফর্মটাই হলো ক্লাস।",
   sec7: "রহিম যখন ফর্ম পূরণ করল, তখন সেটা অবজেক্ট হয়ে গেল। একটা ক্লাস থেকে অনেক অবজেক্ট বানানো যায়।",
-  sec8: "এটা পুরো উদাহরণ কোড। রহিম আর করিম দুজনের ফর্ম তৈরি করে শো ইনফো মেথড দিয়ে দেখানো হয়েছে। এখন রান বাটনে ক্লিক করে আউটপুট দেখো।",
+  sec8: "এটা পুরো উদাহরণ কোড। রহিম আর করিম দুজনের ফর্ম তৈরি করে শো ইনফো মেথড দিয়ে দেখানো হয়েছে।",
   sec9: "ডাটা টাইপ বলে দেয় কোন জায়গায় কী ধরনের মান রাখা যাবে। ইন্টিজার পূর্ণ সংখ্যা, স্ট্রিং টেক্সট, বুলিয়ান ট্রু বা ফলস।",
   sec10: "মেথড হলো কাজের ব্লক। মেইন মেথড থেকে প্রোগ্রাম শুরু হয়। শো ইনফো সাধারণ কাজের জন্য।",
   sec11: "মেথডের অনেক ধরন আছে। ভয়েড কিছু ফেরত দেয় না। রিটার্ন করা মেথড মান ফেরত দেয়। স্ট্যাটিক মেথড অবজেক্ট ছাড়াই কল করা যায়।"
@@ -787,18 +551,17 @@ function speak(id) {
   stopSpeaking();
   const text = texts[id];
   if (!text) return;
-
-  waveHand(); // wave while speaking
-
+  
   currentUtterance = new SpeechSynthesisUtterance(text);
   currentUtterance.lang = 'bn-BD';
-  currentUtterance.rate = 0.92;
+  currentUtterance.rate = 0.95;
   currentUtterance.pitch = 1.05;
-
+  
+  // Try to find a Bengali voice
   const voices = speechSynthesis.getVoices();
-  const bnVoice = voices.find(v => v.lang.includes('bn') || v.name.toLowerCase().includes('bengali'));
+  const bnVoice = voices.find(v => v.lang.includes('bn') || v.name.includes('Bengali'));
   if (bnVoice) currentUtterance.voice = bnVoice;
-
+  
   speechSynthesis.speak(currentUtterance);
 }
 
@@ -807,9 +570,10 @@ function stopSpeaking() {
   currentUtterance = null;
 }
 
+// Auto load voices
 speechSynthesis.onvoiceschanged = () => {};
 
-// Tour
+// Simple tour
 const sections = ['sec1','sec2','sec3','sec4','sec5','sec6','sec7','sec8','sec9','sec10','sec11'];
 let tourIndex = 0;
 
@@ -824,188 +588,11 @@ function playNext() {
   const id = sections[tourIndex];
   document.getElementById(id).scrollIntoView({ behavior: 'smooth', block: 'center' });
   speak(id);
-  if (currentUtterance) {
-    currentUtterance.onend = () => {
-      tourIndex++;
-      setTimeout(playNext, 700);
-    };
-  }
-}
-
-// ==================== CODE RUNNER ====================
-function runCode() {
-  const terminal = document.getElementById('terminal');
-  const body = document.getElementById('terminalBody');
-  const btn = document.getElementById('runBtn');
-
-  terminal.style.display = 'block';
-  body.innerHTML = '<span class="prompt">$ javac Student.java && java Student</span>\n\n<span style="opacity:0.6">Compiling...</span>';
-
-  btn.disabled = true;
-  btn.textContent = '⏳ রান হচ্ছে...';
-
-  setTimeout(() => {
-    body.innerHTML = `<span class="prompt">$ javac Student.java && java Student</span>
-
-<span class="output">রহিমের ফর্ম:
-নাম: রহিম
-রোল: 5
-শ্রেণি: নবম
-শাখা: ক
-
-করিমের ফর্ম:
-নাম: করিম
-রোল: 12
-শ্রেণি: নবম
-শাখা: খ</span>`;
-
-    btn.disabled = false;
-    btn.textContent = '▶️ কোড রান করো';
-    waveHand();
-  }, 1400);
-}
-
-// ==================== MINI GAME ====================
-const gameData = [
-  { class: "Student", object: "rahim = new Student()" },
-  { class: "Car", object: "myCar = new Car()" },
-  { class: "Book", object: "javaBook = new Book()" },
-  { class: "Teacher", object: "sir = new Teacher()" }
-];
-
-let score = 0;
-let selectedClass = null;
-let selectedObject = null;
-let gameActive = false;
-let timerInterval = null;
-let timeLeft = 60;
-
-function shuffle(arr) {
-  return [...arr].sort(() => Math.random() - 0.5);
-}
-
-function startGame() {
-  score = 0;
-  timeLeft = 60;
-  gameActive = true;
-  selectedClass = null;
-  selectedObject = null;
-
-  document.getElementById('score').textContent = score;
-  document.getElementById('timer').textContent = timeLeft;
-  document.getElementById('gameMessage').textContent = '';
-  document.getElementById('startGameBtn').style.display = 'none';
-  document.getElementById('resetBtn').style.display = 'inline-block';
-
-  const classes = shuffle(gameData.map(d => d.class));
-  const objects = shuffle(gameData.map(d => d.object));
-
-  const classList = document.getElementById('classList');
-  const objectList = document.getElementById('objectList');
-  classList.innerHTML = '';
-  objectList.innerHTML = '';
-
-  classes.forEach(c => {
-    const div = document.createElement('div');
-    div.className = 'match-item';
-    div.textContent = c;
-    div.dataset.value = c;
-    div.onclick = () => selectClass(div);
-    classList.appendChild(div);
-  });
-
-  objects.forEach(o => {
-    const div = document.createElement('div');
-    div.className = 'match-item';
-    div.textContent = o;
-    div.dataset.value = o;
-    div.onclick = () => selectObject(div);
-    objectList.appendChild(div);
-  });
-
-  clearInterval(timerInterval);
-  timerInterval = setInterval(() => {
-    timeLeft--;
-    document.getElementById('timer').textContent = timeLeft;
-    if (timeLeft <= 0) {
-      endGame(false);
-    }
-  }, 1000);
-}
-
-function selectClass(el) {
-  if (!gameActive || el.classList.contains('correct')) return;
-  document.querySelectorAll('#classList .match-item').forEach(i => i.classList.remove('selected'));
-  el.classList.add('selected');
-  selectedClass = el;
-  checkMatch();
-}
-
-function selectObject(el) {
-  if (!gameActive || el.classList.contains('correct')) return;
-  document.querySelectorAll('#objectList .match-item').forEach(i => i.classList.remove('selected'));
-  el.classList.add('selected');
-  selectedObject = el;
-  checkMatch();
-}
-
-function checkMatch() {
-  if (!selectedClass || !selectedObject) return;
-
-  const cVal = selectedClass.dataset.value;
-  const oVal = selectedObject.dataset.value;
-
-  const correct = gameData.find(d => d.class === cVal && d.object === oVal);
-
-  if (correct) {
-    selectedClass.classList.remove('selected');
-    selectedObject.classList.remove('selected');
-    selectedClass.classList.add('correct');
-    selectedObject.classList.add('correct');
-    score++;
-    document.getElementById('score').textContent = score;
-    selectedClass = null;
-    selectedObject = null;
-    waveHand();
-
-    if (score === 4) {
-      endGame(true);
-    }
-  } else {
-    selectedClass.classList.add('wrong');
-    selectedObject.classList.add('wrong');
-    setTimeout(() => {
-      selectedClass.classList.remove('selected', 'wrong');
-      selectedObject.classList.remove('selected', 'wrong');
-      selectedClass = null;
-      selectedObject = null;
-    }, 500);
-  }
-}
-
-function endGame(won) {
-  gameActive = false;
-  clearInterval(timerInterval);
-  const msg = document.getElementById('gameMessage');
-  if (won) {
-    msg.textContent = '🎉 অসাধারণ! সব ম্যাচ সঠিক হয়েছে!';
-    msg.style.color = '#00b894';
-  } else {
-    msg.textContent = '⏰ সময় শেষ! আবার চেষ্টা করো।';
-    msg.style.color = '#ff6b6b';
-  }
-}
-
-function resetGame() {
-  clearInterval(timerInterval);
-  document.getElementById('startGameBtn').style.display = 'inline-block';
-  document.getElementById('resetBtn').style.display = 'none';
-  document.getElementById('classList').innerHTML = '';
-  document.getElementById('objectList').innerHTML = '';
-  document.getElementById('gameMessage').textContent = '';
-  document.getElementById('score').textContent = '0';
-  document.getElementById('timer').textContent = '60';
-  gameActive = false;
+  
+  currentUtterance.onend = () => {
+    tourIndex++;
+    setTimeout(playNext, 800);
+  };
 }
 </script>
 </body>
