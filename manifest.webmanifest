@@ -1,0 +1,25 @@
+{
+  "name": "VAYA Java Lab — Interactive Learning Adventure",
+  "short_name": "VAYA Java",
+  "description": "A story-led Bengali-English interactive Java learning app.",
+  "start_url": "./index.html",
+  "scope": "./",
+  "display": "standalone",
+  "orientation": "any",
+  "background_color": "#07111d",
+  "theme_color": "#071522",
+  "icons": [
+    {
+      "src": "./vaya-icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "./vaya-icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ]
+}
